@@ -1,5 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { VerifyService } from '../../src/services/verify.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { VerifyService } from "../../src/verify/services/verify.service";
 
 describe('NotificationsService', () => {
   let service: VerifyService;
