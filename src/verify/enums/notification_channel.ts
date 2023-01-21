@@ -1,4 +1,5 @@
 export enum ENotificationChannel {
     WHATSAPP = 'whatsapp',
-    SMS = 'sms'
+    SMS = 'sms',
+    EMAIL = 'email'
 }
