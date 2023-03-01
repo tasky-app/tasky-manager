@@ -1,11 +1,14 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import {Module} from '@nestjs/common';
+import {ConfigModule} from '@nestjs/config';
 import configuration from '../config/configuration';
 import {VerifyModule} from './verify/verify.module';
+import {UserModule} from './users/user.module';
+import {DatabaseModule} from './database/database.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true, load: [configuration] }), VerifyModule],
-  controllers: [],
-  providers: [],
+    imports: [ConfigModule.forRoot({isGlobal: true, load: [configuration]}), VerifyModule, UserModule, DatabaseModule],
+    controllers: [],
+    providers: [],
 })
-export class CoreModule {}
+export class CoreModule {
+}
