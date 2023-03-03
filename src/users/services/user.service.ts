@@ -1,4 +1,4 @@
-import {Injectable, Logger} from '@nestjs/common';
+import {HttpStatus, Injectable, Logger} from '@nestjs/common';
 import {Repository} from 'typeorm';
 import {User} from '../../database/entities/User';
 import {InjectRepository} from '@nestjs/typeorm';
@@ -6,6 +6,7 @@ import {Client} from '../../database/entities/Client';
 import {Worker} from '../../database/entities/Worker';
 import {EUserType} from '../enums/user_type';
 import {ContactInfo} from '../../database/entities/ContactInfo';
+import {UserException} from '../../exceptions/user_exception';
 
 @Injectable()
 export class UserService {
@@ -33,35 +34,52 @@ export class UserService {
     }
 
     async getUserInfo(documentNumber: string): Promise<User> {
-        try {
-            this.logger.log(`[CC:${documentNumber}] inicia obtención de la info del usuario`);
-            const userInfo = await this.userRepository.findOne({
-                    where: {
-                        documentNumber: documentNumber,
-                    },
-                }
-            );
-            this.logger.log(`[CC:${documentNumber}] finaliza obtención de la info del usuario con resultado: ${JSON.stringify(userInfo)}`);
-            return userInfo;
-        } catch (err) {
-            this.logger.error(err.message)
-            throw err;
-        }
+        this.logger.log(`[CC:${documentNumber}] inicia obtención de la info del usuario`);
+        return this.userRepository.findOne({
+                where: {
+                    documentNumber: documentNumber,
+                },
+            }
+        ).then(userInfo => {
+            if (userInfo != null) {
+                this.logger.log(`[CC:${documentNumber}] finaliza obtención de la info del usuario con resultado: ${JSON.stringify(userInfo)}`);
+                return userInfo;
+            } else {
+                throw new UserException("El usuario no existe en base de datos", HttpStatus.NOT_FOUND);
+            }
+        }).catch(err => {
+            this.logger.error(err.message);
+            throw new UserException(err.message, err.status);
+        });
     }
 
     async saveContactInfo(documentNumber: number, contactInfo: ContactInfo): Promise<void> {
         this.logger.log(`[CC:${documentNumber}] inicia almacenamiento de la información de contacto en base de datos con info: ${JSON.stringify(contactInfo)}`);
+        const userInfo = await this.getUserInfo(documentNumber.toString());
         const response = await this.contactInfoRepository.save(contactInfo);
         this.logger.log(`[CC:${documentNumber}] finaliza almacenamiento de la información de contacto en base de datos`);
-        await this.saveContactInfoInUser(documentNumber, response);
+        await this.saveContactInfoInUser(userInfo, response, documentNumber.toString());
     }
 
-    private async saveContactInfoInUser(documentNumber: number, contactInfo: ContactInfo) {
+    async checkUserExists(cellphone: string): Promise<boolean> {
+        this.logger.log(`[CEL:${cellphone}] inicia consulta del usuario en base de datos`);
+
+        const userExists = await this.contactInfoRepository.findOne({
+            where: {
+                cellphone: cellphone,
+            },
+        }).then((user) => {
+            return user != null;
+        });
+        this.logger.log(`[CEL:${cellphone}] finaliza consulta del usuario en base de datos con resultado: ${userExists}`);
+        return userExists;
+    }
+C
+    private async saveContactInfoInUser(userInfo: User, contactInfo: ContactInfo, documentNumber: string) {
         this.logger.log(`[CC:${documentNumber}] inicia actualización de la información de contacto con info: ${JSON.stringify(contactInfo)}`);
-        const userInfo = await this.getUserInfo(documentNumber.toString());
         userInfo.contactInfoId = contactInfo;
         await this.contactInfoRepository.createQueryBuilder()
-            .update(User, { ...userInfo })
+            .update(User, {...userInfo})
             .where("document_number = :documentNumber", {documentNumber})
             .execute();
         this.logger.log(`[CC:${documentNumber}] finaliza actualización de la información de contacto`);
