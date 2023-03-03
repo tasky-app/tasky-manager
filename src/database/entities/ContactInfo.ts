@@ -18,5 +18,5 @@ export class ContactInfo {
     city: string;
 
     @Column()
-    cellphone: number;
+    cellphone: string;
 }

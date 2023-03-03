@@ -30,7 +30,7 @@ export class UserController {
     public async createContactInfo(@Headers() headers, @Body() contactInfo: ContactInfo) {
         this.logger.log(`[CC: ${headers.document_number}] [TYPE: ${headers.user_type}] INICIA CREACIÓN DE LA INFORMACIÓN DE CONTACTO EN BASE DE DATOS`);
         await this.userService.saveContactInfo(headers.document_number, contactInfo);
-        this.logger.log(`[CC: ${headers.documentNumber}] [TYPE: ${headers.user_type}] FINALIZA CREACIÓN DE LA INFORMACIÓN DE CONTACTO EN BASE DE DATOS`);
+        this.logger.log(`[CC: ${headers.document_number}] [TYPE: ${headers.user_type}] FINALIZA CREACIÓN DE LA INFORMACIÓN DE CONTACTO EN BASE DE DATOS`);
     }
 
     @Put("type")
