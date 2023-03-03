@@ -2,7 +2,8 @@ import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
 @Entity()
 export class ContactInfo {
-    @PrimaryGeneratedColumn()
+
+    @PrimaryGeneratedColumn({name: 'contact_info_id'})
     contactInfoId: number;
 
     @Column()

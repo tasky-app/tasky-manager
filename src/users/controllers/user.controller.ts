@@ -28,15 +28,17 @@ export class UserController {
 
     @Put("contact-info")
     public async createContactInfo(@Headers() headers, @Body() contactInfo: ContactInfo) {
-        this.logger.log(`[CC: ${headers.document_number}] [TYPE: ${headers.user_type}] INICIA CREACIÓN DE LA INFORMACIÓN DE CONTACTO EN BASE DE DATOS`);
+        this.logger.log(`[CC: ${headers.document_number}] INICIA CREACIÓN DE LA INFORMACIÓN DE CONTACTO EN BASE DE DATOS`);
         await this.userService.saveContactInfo(headers.document_number, contactInfo);
-        this.logger.log(`[CC: ${headers.document_number}] [TYPE: ${headers.user_type}] FINALIZA CREACIÓN DE LA INFORMACIÓN DE CONTACTO EN BASE DE DATOS`);
+        this.logger.log(`[CC: ${headers.document_number}] FINALIZA CREACIÓN DE LA INFORMACIÓN DE CONTACTO EN BASE DE DATOS`);
     }
 
-    @Put("type")
-    public async createUserType(@Headers() headers) {
-        this.logger.log(`[CC: ${headers.documentNumber}] [TYPE: ${headers.user_type}] INICIA CREACIÓN DEL TIPO DE USUARIO EN BASE DE DATOS`);
-        this.logger.log(`[CC: ${headers.documentNumber}] [TYPE: ${headers.user_type}] FINALIZA CREACIÓN DEL TIPO DE USUARIO EN BASE DE DATOS`);
+    @Get("exists")
+    public async userExistsInBd(@Headers() headers): Promise<boolean> {
+        this.logger.log(`[CEL: ${headers.cellphone}] INICIA CONSULTA DE REGISTRO DEL USUARIO`);
+        const userExists = await this.userService.checkUserExists(headers.cellphone);
+        this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA CONSULTA DE REGISTRO DEL USUARIO CON RESULTADO`);
+        return userExists;
     }
 
     @Put()
