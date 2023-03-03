@@ -18,6 +18,6 @@ export class ContactInfo {
     @Column()
     city: string;
 
-    @Column()
+    @Column({unique: true})
     cellphone: string;
 }
