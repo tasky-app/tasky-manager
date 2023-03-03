@@ -53,16 +53,17 @@ export class UserService {
         this.logger.log(`[CC:${documentNumber}] inicia almacenamiento de la información de contacto en base de datos con info: ${JSON.stringify(contactInfo)}`);
         const response = await this.contactInfoRepository.save(contactInfo);
         this.logger.log(`[CC:${documentNumber}] finaliza almacenamiento de la información de contacto en base de datos`);
-        this.saveContactInfoInUser(documentNumber, response);
+        await this.saveContactInfoInUser(documentNumber, response);
     }
 
-    private saveContactInfoInUser(documentNumber: number, contactInfo: ContactInfo) {
+    private async saveContactInfoInUser(documentNumber: number, contactInfo: ContactInfo) {
         this.logger.log(`[CC:${documentNumber}] inicia actualización de la información de contacto con info: ${JSON.stringify(contactInfo)}`);
- /*       this.contactInfoRepository.createQueryBuilder()
-            .update(User)
-            .set()
+        const userInfo = await this.getUserInfo(documentNumber.toString());
+        userInfo.contactInfoId = contactInfo;
+        await this.contactInfoRepository.createQueryBuilder()
+            .update(User, { ...userInfo })
             .where("document_number = :documentNumber", {documentNumber})
-            .execute()*/
+            .execute();
         this.logger.log(`[CC:${documentNumber}] finaliza actualización de la información de contacto`);
     }
 
