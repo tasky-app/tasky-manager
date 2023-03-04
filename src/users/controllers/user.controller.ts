@@ -12,7 +12,7 @@ export class UserController {
     }
 
     @Post()
-    public async createInBd(@Headers() headers, @Body() user: User): Promise<void> {
+    public async createInDb(@Headers() headers, @Body() user: User): Promise<void> {
         this.logger.log(`[CC: ${user.documentNumber}] INICIA CREACIÓN DEL USUARIO EN BASE DE DATOS`);
         await this.userService.saveUser(user, headers.user_type);
         this.logger.log(`[CC: ${user.documentNumber}] FINALIZA CREACIÓN DEL USUARIO EN BASE DE DATOS`);
@@ -34,7 +34,7 @@ export class UserController {
     }
 
     @Get("exists")
-    public async userExistsInBd(@Headers() headers): Promise<boolean> {
+    public async userExistsInDb(@Headers() headers): Promise<boolean> {
         this.logger.log(`[CEL: ${headers.cellphone}] INICIA CONSULTA DE REGISTRO DEL USUARIO`);
         const userExists = await this.userService.checkUserExists(headers.cellphone);
         this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA CONSULTA DE REGISTRO DEL USUARIO CON RESULTADO`);

@@ -64,12 +64,10 @@ export class UserService {
     async checkUserExists(cellphone: string): Promise<boolean> {
         this.logger.log(`[CEL:${cellphone}] inicia consulta del usuario en base de datos`);
 
-        const userExists = await this.contactInfoRepository.findOne({
+        const userExists = await this.contactInfoRepository.exist({
             where: {
                 cellphone: cellphone,
             },
-        }).then((user) => {
-            return user != null;
         });
         this.logger.log(`[CEL:${cellphone}] finaliza consulta del usuario en base de datos con resultado: ${userExists}`);
         return userExists;
