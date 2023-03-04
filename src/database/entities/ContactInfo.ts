@@ -10,9 +10,6 @@ export class ContactInfo {
     email: string;
 
     @Column()
-    address: string;
-
-    @Column()
     neighborhood: string;
 
     @Column()

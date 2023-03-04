@@ -4,9 +4,16 @@ import configuration from '../config/configuration';
 import {VerifyModule} from './verify/verify.module';
 import {UserModule} from './users/user.module';
 import {DatabaseModule} from './database/database.module';
+import {CategoriesModule} from './categories/categories.module';
+import {AddressModule} from './address/address.module';
 
 @Module({
-    imports: [ConfigModule.forRoot({isGlobal: true, load: [configuration]}), VerifyModule, UserModule, DatabaseModule],
+    imports: [ConfigModule.forRoot({isGlobal: true, load: [configuration]}),
+        VerifyModule,
+        UserModule,
+        AddressModule,
+        CategoriesModule,
+        DatabaseModule],
     controllers: [],
     providers: [],
 })
