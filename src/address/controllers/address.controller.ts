@@ -20,14 +20,16 @@ export class AddressController {
     @Post()
     public async saveAddressInDb(@Headers() headers, @Body() body) {
         this.logger.log(`[CEL: ${headers.cellphone}] INICIA REGISTRO DE LA DIRECCIÓN DEL CLIENTE`);
-        await this.addressService.saveAddress(headers.cellphone, body.address);
+        const address = await this.addressService.saveAddress(headers.cellphone, body.address);
         this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA REGISTRO DE LA DIRECCIÓN DEL CLIENTE`);
+        return address;
     }
 
     @Delete()
-    public async deleteAddressFromDb(@Headers() headers) {
-        this.logger.log(`[CEL: ${headers.cellphone}] INICIA REGISTRO DE LA DIRECCIÓN DEL CLIENTE`);
-        this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA REGISTRO DE LA DIRECCIÓN DEL CLIENTE`);
+    public async deleteAddressFromDb(@Headers() headers, @Body() body) {
+        this.logger.log(`[CEL: ${headers.cellphone}] INICIA ELIMINACIÓN DE LA DIRECCIÓN DEL CLIENTE`);
+        await this.addressService.deleteAddress(headers.cellphone, body);
+        this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA ELIMINACIÓN DE LA DIRECCIÓN DEL CLIENTE`);
     }
 
 }

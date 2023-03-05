@@ -48,8 +48,27 @@ export class AddressService {
         addressEntity.address = address;
         addressEntity.contactInfoId = contactInfo;
 
-        await this.addressRepository.save(addressEntity);
-        this.logger.log(`[CEL: ${cellphone}] finaliza proceso de guardado de la dirección en base de datos`);
+        return this.addressRepository.save(addressEntity).then(addressResponse => {
+            this.logger.log(`[CEL: ${cellphone}] finaliza proceso de guardado de la dirección en base de datos`);
+            return addressResponse;
+        }).catch(err => {
+            this.logger.error(`[CEL: ${cellphone}] Ocurrió un error al guardar la dirección error: ${JSON.stringify(err)}`);
+            throw new AddressException("Ocurrió un error al guardar la dirección", HttpStatus.INTERNAL_SERVER_ERROR)
+        });
+    }
+
+    async deleteAddress(cellphone: string, address: Address) {
+        this.logger.log(`[CEL: ${cellphone}] inicia proceso de eliminación de la dirección ${address.address}`);
+        await this.addressRepository.createQueryBuilder('delete_address')
+            .delete()
+            .from(Address)
+            .where("address_id = :id", {id: address.addressId})
+            .execute().then(() => {
+                this.logger.log(`[CEL: ${cellphone}] finaliza proceso de eliminación de la dirección ${address.address}`);
+            }).catch(err => {
+                this.logger.log(`[CEL: ${cellphone}] ocurrió un error al eliminar la dirección ${JSON.stringify(err)}`);
+                throw new AddressException("Ocurrió un error al eliminar la dirección", HttpStatus.INTERNAL_SERVER_ERROR)
+            })
     }
 
     private async getContactInfo(cellphone: string) {
@@ -64,7 +83,7 @@ export class AddressService {
                     this.logger.log(`[CEL: ${cellphone}] finaliza consulta de la información de contacto del cliente con resultado: ${JSON.stringify(contactInfo)}`);
                     return contactInfo;
                 } else {
-                    this.logger.error(`[CEL: ${cellphone}] no existe información de contacto para el client`);
+                    this.logger.error(`[CEL: ${cellphone}] no existe información de contacto para el cliente`);
                     throw new AddressException("Ocurrió un error al obtener la info de contacto", HttpStatus.NOT_FOUND);
                 }
             })

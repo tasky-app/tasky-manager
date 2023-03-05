@@ -1,7 +1,7 @@
-import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {ContactInfo} from './ContactInfo';
 
-@Entity()
+@Entity({name: 'addresses'})
 export class Address {
 
     @PrimaryGeneratedColumn({name: 'address_id'})
@@ -10,7 +10,7 @@ export class Address {
     @Column()
     address: string;
 
-    @OneToOne(() => ContactInfo)
-    @JoinColumn({name: 'contact_info_id', referencedColumnName: 'contactInfoId'})
+    @ManyToOne(() => ContactInfo, (contactInfo) => contactInfo.contactInfoId)
+    @JoinColumn({ name: 'contact_info_id' })
     contactInfoId: ContactInfo;
 }
