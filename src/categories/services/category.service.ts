@@ -3,6 +3,7 @@ import {Repository} from 'typeorm';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Category} from '../../database/entities/Category';
 import {CategoriesException} from '../../exceptions/categories_exception';
+import {Service} from '../../database/entities/Service';
 
 @Injectable()
 export class CategoryService {
@@ -10,7 +11,8 @@ export class CategoryService {
     private readonly logger = new Logger(CategoryService.name);
 
     constructor(
-        @InjectRepository(Category) private readonly categoryRepository: Repository<Category>
+        @InjectRepository(Category) private readonly categoryRepository: Repository<Category>,
+        @InjectRepository(Service) private readonly serviceRepository: Repository<Service>
     ) {
     }
 
@@ -30,5 +32,28 @@ export class CategoryService {
                 }
                 throw new CategoriesException("Ocurrió un error al consultar las categorías", HttpStatus.INTERNAL_SERVER_ERROR);
             });
+    }
+
+    async getServicesByCategory(categoryId: number) {
+        this.logger.log("inicia consulta de los servicios por categoria");
+        return this.serviceRepository.find({
+            relations: {
+                category: true,
+            },
+            where: {
+                category: {
+                    categoryId: categoryId,
+                },
+            },
+        }).then(response => {
+            const services = [];
+            response.forEach(service => {
+                services.push(service.description);
+            });
+            this.logger.log(`finaliza consulta de los servicios por categoria con resultado: ${JSON.stringify(services)}`);
+            return services;
+        }).catch(() => {
+            throw new CategoriesException("Ocurrió un error al consultar los servicios", HttpStatus.INTERNAL_SERVER_ERROR);
+        })
     }
 }
