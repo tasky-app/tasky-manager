@@ -92,7 +92,7 @@ C
                 await this.clientRepository.save(client);
             } else {
                 const worker = new Worker();
-                worker.userId = userInfo;
+                worker.user = userInfo;
                 await this.workerRepository.save(worker);
             }
             this.logger.log(`finaliza almacenamiento del ${userType} en base de datos`);

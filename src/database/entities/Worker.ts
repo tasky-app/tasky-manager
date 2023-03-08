@@ -11,16 +11,25 @@ export class Worker {
     @Column({nullable: true})
     fee: number;
 
-    @Column({name: 'is_certified', nullable: true})
-    isCertified: boolean;
+    @Column({name: 'start_hour', nullable: true})
+    startHour: string;
+
+    @Column({name: 'final_hour', nullable: true})
+    finalHour: string;
+
+    @Column({name: 'own_vehicle', nullable: true})
+    ownVehicle: boolean;
+
+    @Column({nullable: true})
+    experience: number;
 
     @OneToOne(() => WorkerStatus)
     @JoinColumn({name: 'worker_status_id', referencedColumnName: 'id'})
-    workerStatusId: WorkerStatus;
+    workerStatus: WorkerStatus;
 
     @OneToOne(() => User)
     @JoinColumn({name: 'user_id', referencedColumnName: 'id'})
-    userId: User;
+    user: User;
 
     @Column()
     @UpdateDateColumn({name: 'updated_at'})
