@@ -15,18 +15,12 @@ O
 src/database/entities/Client.ts,5/5/557711a0a816f639378fa0c49185c9d5efaa9fbf
 H
 src/users/user.module.ts,6/8/686088721e9312ac2aea42aeb51a29f46f5f6775
-P
- src/exceptions/user_exception.ts,7/c/7caee5ce9577e7d36fc57be8cbc79ac8450be20e
 M
 src/address/address.module.ts,f/6/f674c8807559c7b2cfc6f2d72d935177db92f35b
 S
 #src/exceptions/address_exception.ts,6/4/6420b5381e3033314a40d0aaf1bae75d06d923ab
 T
 $src/database/entities/ContactInfo.ts,9/2/92888b10b8267febc9e14d33a20882f458a24bcf
-a
-1src/categories/controllers/category.controller.ts,1/6/16dfb795f5bd4b75ceeb9a74a55380e11519c7cb
-S
-#src/categories/categories.module.ts,1/d/1d937244d6b23813831bed452235ad14b3cc9574
 ;
 src/main.ts,1/a/1af9a5bdf96ddff3a2f3427ed520b7005e9564ad
 Q
@@ -37,7 +31,5 @@ U
 %src/verify/services/verify.service.ts,d/8/d810be92a08c913f8cf218906992ac0d27b6f61f
 X
 (src/users/controllers/user.controller.ts,b/c/bcb1a618a8f96a29f31267adae32f418d77183d1
-[
-+src/categories/services/category.service.ts,9/2/926f418e0b037581cbc3c80fa12f63749be810cf
 P
  src/database/entities/Address.ts,3/b/3b4dc11d39ebd9a120b97c9192c0ecdae261702c
