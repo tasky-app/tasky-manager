@@ -6,6 +6,10 @@ import {ContactInfo} from './entities/ContactInfo';
 import {Client} from './entities/Client';
 import {WorkerStatus} from './entities/WorkerStatus';
 import {Worker} from './entities/Worker';
+import {WorkerServices} from './entities/WorkerServices';
+import {Category} from './entities/Category';
+import {Address} from './entities/Address';
+import {Service} from './entities/Service';
 
 @Global()
 @Module({
@@ -16,10 +20,21 @@ import {Worker} from './entities/Worker';
         username: configuration().db_username,
         password: configuration().db_pass,
         database: configuration().db_name,
-        entities: [User, ContactInfo, Client, Worker, WorkerStatus],
-        synchronize: true,
+        entities: [
+            User,
+            ContactInfo,
+            Client,
+            Worker,
+            WorkerStatus,
+            WorkerServices,
+            Category,
+            Address,
+            Service
+        ],
+        synchronize: false,
         autoLoadEntities: true
     })],
     exports: [TypeOrmModule]
 })
-export class DatabaseModule {}
+export class DatabaseModule {
+}
