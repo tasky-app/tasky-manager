@@ -3,8 +3,6 @@
 	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
 A
 package-lock.json,f/a/fa288d1472d29beccb489a676f68739ad365fc47
-<
-package.json,7/0/7030d0b2f71b999ff89a343de08c414af32fc93a
 F
 config/env/develop.env,1/c/1c577f6188305a4f8ae6f634f9248e19b1829ba6
 G
@@ -33,3 +31,31 @@ X
 (src/users/controllers/user.controller.ts,b/c/bcb1a618a8f96a29f31267adae32f418d77183d1
 P
  src/database/entities/Address.ts,3/b/3b4dc11d39ebd9a120b97c9192c0ecdae261702c
+B
+src/core.module.ts,2/4/24306643c9fd088cf60dbdc6b4ab86f34e4e83c4
+R
+"src/exceptions/worker_exception.ts,a/6/a6b460dbca8bf356d65ddbe03c3cc0af8fddb60c
+W
+'src/database/entities/WorkerServices.ts,8/5/8529dc38bd99506fef63ded0ce6c32fd789bbb2f
+K
+src/worker/worker.module.ts,4/a/4a39386606d2f0c5c60ac78effb5900a08f4711c
+O
+src/database/entities/Worker.ts,7/3/7301bb8e5439974729c5965fe195c648cdbe4be3
+M
+src/database/entities/User.ts,d/9/d9c53f3a38567dfb900fbbae6a569222c187b658
+R
+"src/users/services/user.service.ts,a/a/aa7752da501c4b4e93b67474464e6b94434b4fcc
+U
+%src/database/entities/WorkerStatus.ts,e/2/e225f583f6265016109cba5d4acb0ff1c94f04b2
+P
+ src/database/entities/Service.ts,b/c/bccc209955ee3aa616c2d642a5caac6932973261
+V
+&src/exceptions/categories_exception.ts,9/b/9b98d6585f36eb73c4bda6386386a41653e4d60b
+V
+&src/worker/enums/worker_status_enum.ts,3/4/34a403922e6c29066e3c89275345f21daf4c3454
+P
+ src/exceptions/user_exception.ts,7/c/7caee5ce9577e7d36fc57be8cbc79ac8450be20e
+Q
+!src/exceptions/tasky_exception.ts,c/1/c144bb899dedb9309a6be9b00888e4f083e2fd17
+[
++src/worker/controllers/worker.controller.ts,6/b/6b26aa3483257f8817e17db96ad244bc7a955b52
