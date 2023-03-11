@@ -1,5 +1,5 @@
 import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {ContactInfo} from './ContactInfo';
+import {User} from './User';
 
 @Entity({name: 'addresses'})
 export class Address {
@@ -10,7 +10,13 @@ export class Address {
     @Column()
     address: string;
 
-    @ManyToOne(() => ContactInfo, (contactInfo) => contactInfo.contactInfoId)
-    @JoinColumn({ name: 'contact_info_id' })
-    contactInfoId: ContactInfo;
+    @Column()
+    neighborhood: string;
+
+    @Column()
+    city: string;
+
+    @ManyToOne(() => User, (user) => user.id)
+    @JoinColumn({ name: 'user_id' })
+    userId: User;
 }

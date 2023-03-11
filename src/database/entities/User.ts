@@ -1,13 +1,4 @@
-import {ContactInfo} from './ContactInfo';
-import {
-    Entity,
-    Column,
-    PrimaryGeneratedColumn,
-    OneToOne,
-    JoinColumn,
-    CreateDateColumn,
-    UpdateDateColumn
-} from 'typeorm';
+import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
 
 @Entity({name: 'user'})
 export class User {
@@ -23,15 +14,17 @@ export class User {
     @Column({name: 'document_number', unique: true})
     documentNumber: string;
 
+    @Column({name: 'cellphone', unique: true})
+    cellphone: string;
+
     @Column()
     gender: string;
 
+    @Column()
+    email: string;
+
     @Column({name: 'birth_date'})
     birthDate: Date;
-
-    @OneToOne(() => ContactInfo)
-    @JoinColumn({name: 'contact_info_id', referencedColumnName: 'contactInfoId'})
-    contactInfoId: ContactInfo;
 
     @Column()
     @CreateDateColumn({name: 'created_at'})

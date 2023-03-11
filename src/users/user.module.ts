@@ -5,12 +5,12 @@ import {User} from '../database/entities/User';
 import {Client} from '../database/entities/Client';
 import {Worker} from '../database/entities/Worker';
 import {UserController} from './controllers/user.controller';
-import {ContactInfo} from '../database/entities/ContactInfo';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([User, Client, Worker, ContactInfo])],
+    imports: [TypeOrmModule.forFeature([User, Client, Worker])],
     providers: [UserService],
-    controllers: [UserController]
+    controllers: [UserController],
+    exports: [UserService]
 })
 
 export class UserModule {
