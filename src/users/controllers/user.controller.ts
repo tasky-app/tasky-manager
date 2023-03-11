@@ -1,7 +1,6 @@
 import {Body, Controller, Get, Headers, Logger, Post, Put} from "@nestjs/common";
 import {UserService} from '../services/user.service';
 import {User} from '../../database/entities/User';
-import {ContactInfo} from '../../database/entities/ContactInfo';
 
 @Controller("user")
 export class UserController {
@@ -24,13 +23,6 @@ export class UserController {
         const user = await this.userService.getUserInfo(headers.document_number);
         this.logger.log(`[CC: ${headers.document_number}] FINALIZA OBTENCIÓN DE LA INFORMACIÓN DEL USUARIO`);
         return user;
-    }
-
-    @Put("contact-info")
-    public async createContactInfo(@Headers() headers, @Body() contactInfo: ContactInfo) {
-        this.logger.log(`[CC: ${headers.document_number}] INICIA CREACIÓN DE LA INFORMACIÓN DE CONTACTO EN BASE DE DATOS`);
-        await this.userService.saveContactInfo(headers.document_number, contactInfo);
-        this.logger.log(`[CC: ${headers.document_number}] FINALIZA CREACIÓN DE LA INFORMACIÓN DE CONTACTO EN BASE DE DATOS`);
     }
 
     @Get("exists")

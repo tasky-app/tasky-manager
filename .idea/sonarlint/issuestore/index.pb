@@ -11,14 +11,8 @@ L
 src/users/enums/user_type.ts,2/b/2b13688350835fe2ae9063215b4560e79e703980
 O
 src/database/entities/Client.ts,5/5/557711a0a816f639378fa0c49185c9d5efaa9fbf
-H
-src/users/user.module.ts,6/8/686088721e9312ac2aea42aeb51a29f46f5f6775
-M
-src/address/address.module.ts,f/6/f674c8807559c7b2cfc6f2d72d935177db92f35b
 S
 #src/exceptions/address_exception.ts,6/4/6420b5381e3033314a40d0aaf1bae75d06d923ab
-T
-$src/database/entities/ContactInfo.ts,9/2/92888b10b8267febc9e14d33a20882f458a24bcf
 ;
 src/main.ts,1/a/1af9a5bdf96ddff3a2f3427ed520b7005e9564ad
 Q
@@ -27,10 +21,6 @@ Q
 +src/verify/controllers/verify.controller.ts,8/a/8a82e8b4b2af81442b0c5dab1ae5a2092b1199a8
 U
 %src/verify/services/verify.service.ts,d/8/d810be92a08c913f8cf218906992ac0d27b6f61f
-X
-(src/users/controllers/user.controller.ts,b/c/bcb1a618a8f96a29f31267adae32f418d77183d1
-P
- src/database/entities/Address.ts,3/b/3b4dc11d39ebd9a120b97c9192c0ecdae261702c
 B
 src/core.module.ts,2/4/24306643c9fd088cf60dbdc6b4ab86f34e4e83c4
 R
@@ -41,10 +31,6 @@ K
 src/worker/worker.module.ts,4/a/4a39386606d2f0c5c60ac78effb5900a08f4711c
 O
 src/database/entities/Worker.ts,7/3/7301bb8e5439974729c5965fe195c648cdbe4be3
-M
-src/database/entities/User.ts,d/9/d9c53f3a38567dfb900fbbae6a569222c187b658
-R
-"src/users/services/user.service.ts,a/a/aa7752da501c4b4e93b67474464e6b94434b4fcc
 U
 %src/database/entities/WorkerStatus.ts,e/2/e225f583f6265016109cba5d4acb0ff1c94f04b2
 P
@@ -59,3 +45,23 @@ Q
 !src/exceptions/tasky_exception.ts,c/1/c144bb899dedb9309a6be9b00888e4f083e2fd17
 [
 +src/worker/controllers/worker.controller.ts,6/b/6b26aa3483257f8817e17db96ad244bc7a955b52
+S
+#src/categories/categories.module.ts,1/d/1d937244d6b23813831bed452235ad14b3cc9574
+a
+1src/categories/controllers/category.controller.ts,1/6/16dfb795f5bd4b75ceeb9a74a55380e11519c7cb
+U
+%src/worker/services/worker.service.ts,a/b/abab347d1abd08d215d0e9dac85fe5744f7cc8eb
+Z
+*test/controllers/verify.controller.spec.ts,1/0/10bd6499a8e9782dd8e75f0c930ba988cdc1e1ee
+[
++src/categories/services/category.service.ts,9/2/926f418e0b037581cbc3c80fa12f63749be810cf
+O
+src/database/database.module.ts,d/6/d66decb9666bd173746e688b65f62e8cdbc93dff
+<
+package.json,7/0/7030d0b2f71b999ff89a343de08c414af32fc93a
+D
+test/app.e2e-spec.ts,a/7/a74edfbf319672dfb0ebaef495d5ff498e281b6f
+B
+test/jest-e2e.json,2/2/22c686c93a7d563a763e70728fd9fb4eb1d86e20
+d
+4test/address/controllers/address.controllers.spec.ts,2/6/263e5fd3f7c0ae7ad33946059a0792fbdf5bd45d

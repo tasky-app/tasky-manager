@@ -1,18 +1,20 @@
-import {HttpStatus, Injectable, Logger} from '@nestjs/common';
+import {HttpStatus, Inject, Injectable, Logger} from '@nestjs/common';
 import {Repository} from 'typeorm';
 import {InjectRepository} from '@nestjs/typeorm';
-import {ContactInfo} from '../../database/entities/ContactInfo';
 import {Address} from '../../database/entities/Address';
 import {AddressException} from '../../exceptions/address_exception';
+import {UserService} from '../../users/services/user.service';
 
 @Injectable()
 export class AddressService {
 
+    @Inject(UserService)
+    private readonly userService: UserService;
+
     private readonly logger = new Logger(AddressService.name);
 
     constructor(
-        @InjectRepository(Address) private readonly addressRepository: Repository<Address>,
-        @InjectRepository(ContactInfo) private readonly contactInfoRepository: Repository<ContactInfo>
+        @InjectRepository(Address) private readonly addressRepository: Repository<Address>
     ) {
     }
 
@@ -23,10 +25,10 @@ export class AddressService {
                 address: true,
             },
             relations: {
-                contactInfoId: true,
+                userId: true,
             },
             where: {
-                contactInfoId: {
+                userId: {
                     cellphone: cellphone,
                 },
             },
@@ -41,18 +43,20 @@ export class AddressService {
 
     }
 
-    async saveAddress(cellphone: string, address: string) {
-        this.logger.log(`[CEL: ${cellphone}] inicia proceso de guardado de la dirección en base de datos: ${address}`);
-        const contactInfo = await this.getContactInfo(cellphone);
+    async saveAddress(documentNumber: string, address: Address) {
+        this.logger.log(`[CC: ${documentNumber}] inicia proceso de guardado de la dirección en base de datos: ${address}`);
+        const user = await this.userService.getUserInfo(documentNumber);
         const addressEntity = new Address();
-        addressEntity.address = address;
-        addressEntity.contactInfoId = contactInfo;
+        addressEntity.address = address.address;
+        addressEntity.city = address.city;
+        addressEntity.neighborhood = address.neighborhood;
+        addressEntity.userId = user;
 
         return this.addressRepository.save(addressEntity).then(addressResponse => {
-            this.logger.log(`[CEL: ${cellphone}] finaliza proceso de guardado de la dirección en base de datos`);
+            this.logger.log(`[CC: ${documentNumber}] finaliza proceso de guardado de la dirección en base de datos`);
             return addressResponse;
         }).catch(err => {
-            this.logger.error(`[CEL: ${cellphone}] Ocurrió un error al guardar la dirección error: ${JSON.stringify(err)}`);
+            this.logger.error(`[CC: ${documentNumber}] Ocurrió un error al guardar la dirección error: ${JSON.stringify(err)}`);
             throw new AddressException("Ocurrió un error al guardar la dirección", HttpStatus.INTERNAL_SERVER_ERROR)
         });
     }
@@ -68,24 +72,6 @@ export class AddressService {
             }).catch(err => {
                 this.logger.log(`[CEL: ${cellphone}] ocurrió un error al eliminar la dirección ${JSON.stringify(err)}`);
                 throw new AddressException("Ocurrió un error al eliminar la dirección", HttpStatus.INTERNAL_SERVER_ERROR)
-            })
-    }
-
-    private async getContactInfo(cellphone: string) {
-        this.logger.log(`[CEL: ${cellphone}] inicia consulta de la información de contacto del cliente`);
-        return this.contactInfoRepository.findOne({
-            where: {
-                cellphone: cellphone,
-            },
-        })
-            .then(contactInfo => {
-                if (contactInfo != null) {
-                    this.logger.log(`[CEL: ${cellphone}] finaliza consulta de la información de contacto del cliente con resultado: ${JSON.stringify(contactInfo)}`);
-                    return contactInfo;
-                } else {
-                    this.logger.error(`[CEL: ${cellphone}] no existe información de contacto para el cliente`);
-                    throw new AddressException("Ocurrió un error al obtener la info de contacto", HttpStatus.NOT_FOUND);
-                }
             })
     }
 }

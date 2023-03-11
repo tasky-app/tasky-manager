@@ -19,9 +19,9 @@ export class AddressController {
 
     @Post()
     public async saveAddressInDb(@Headers() headers, @Body() body) {
-        this.logger.log(`[CEL: ${headers.cellphone}] INICIA REGISTRO DE LA DIRECCIÓN DEL CLIENTE`);
-        const address = await this.addressService.saveAddress(headers.cellphone, body.address);
-        this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA REGISTRO DE LA DIRECCIÓN DEL CLIENTE`);
+        this.logger.log(`[CC: ${headers.document_number}] INICIA REGISTRO DE LA DIRECCIÓN DEL CLIENTE`);
+        const address = await this.addressService.saveAddress(headers.document_number, body.address);
+        this.logger.log(`[CC: ${headers.document_number}] FINALIZA REGISTRO DE LA DIRECCIÓN DEL CLIENTE`);
         return address;
     }
 
