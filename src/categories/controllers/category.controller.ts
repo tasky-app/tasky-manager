@@ -10,7 +10,7 @@ export class CategoryController {
     }
 
     @Get()
-    public async getCategories(@Headers() headers) {
+    public async getCategories() {
         this.logger.log(`INICIA OBTENCIÓN DE LAS CATEGORÍAS`);
         const categories = this.categoryService.getCategories();
         this.logger.log(`FINALIZA OBTENCIÓN DE LAS CATEGORÍAS`);

@@ -1,5 +1,6 @@
-import {Body, Controller, Delete, Get, Headers, Logger, Post} from "@nestjs/common";
+import {Body, Controller, Delete, Get, Headers, Logger, Post, Put} from "@nestjs/common";
 import {AddressService} from '../services/address.service';
+import { Address } from "src/database/entities/Address";
 
 @Controller("address")
 export class AddressController {
@@ -17,11 +18,27 @@ export class AddressController {
         return addresses;
     }
 
+    @Get('main')
+    public async getMainAddress(@Headers() headers) {
+        this.logger.log(`[CEL: ${headers.cellphone}] INICIA OBTENCIÓN DE LAS DIRECCIONES DEL CLIENTE`);
+        const addresses = await this.addressService.getMainAddress(headers.cellphone);
+        this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA OBTENCIÓN DE LAS DIRECCIONES DEL CLIENTE`);
+        return addresses;
+    }
+
+    @Put('main')
+    public async updateMainAddress(@Headers() headers, @Body() body: Address) {
+        this.logger.log(`[CEL: ${headers.cellphone}] INICIA ACTUALIZACIÓN DE LA DIRECCIÓN DEL CLIENTE`);
+        const addresses = await this.addressService.updateMainAddress(headers.cellphone, body);
+        this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA ACTUALIZACIÓN DE LA DIRECCIÓN DEL CLIENTE`);
+        return addresses;
+    }
+
     @Post()
-    public async saveAddressInDb(@Headers() headers, @Body() body) {
-        this.logger.log(`[CC: ${headers.document_number}] INICIA REGISTRO DE LA DIRECCIÓN DEL CLIENTE`);
-        const address = await this.addressService.saveAddress(headers.document_number, body.address);
-        this.logger.log(`[CC: ${headers.document_number}] FINALIZA REGISTRO DE LA DIRECCIÓN DEL CLIENTE`);
+    public async saveAddressInDb(@Headers() headers, @Body() body: Address) {
+        this.logger.log(`[CEL: ${headers.cellphone}] INICIA REGISTRO DE LA DIRECCIÓN DEL CLIENTE`);
+        const address = await this.addressService.saveAddress(headers.cellphone, body);
+        this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA REGISTRO DE LA DIRECCIÓN DEL CLIENTE`);
         return address;
     }
 

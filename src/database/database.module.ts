@@ -2,7 +2,6 @@ import {Global, Module} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import configuration from '../../config/configuration';
 import {User} from './entities/User';
-import {ContactInfo} from './entities/ContactInfo';
 import {Client} from './entities/Client';
 import {WorkerStatus} from './entities/WorkerStatus';
 import {Worker} from './entities/Worker';
@@ -22,7 +21,6 @@ import {Service} from './entities/Service';
         database: configuration().db_name,
         entities: [
             User,
-            ContactInfo,
             Client,
             Worker,
             WorkerStatus,

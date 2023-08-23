@@ -1,14 +1,15 @@
-import {HttpStatus, Injectable, Logger} from '@nestjs/common';
-import {Repository} from 'typeorm';
-import {User} from '../../database/entities/User';
-import {InjectRepository} from '@nestjs/typeorm';
-import {Client} from '../../database/entities/Client';
-import {Worker} from '../../database/entities/Worker';
-import {EUserType} from '../enums/user_type';
-import {UserException} from '../../exceptions/user_exception';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { User } from '../../database/entities/User';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Client } from '../../database/entities/Client';
+import { Worker } from '../../database/entities/Worker';
+import { EUserType } from '../enums/user_type';
+import { UserException } from '../../exceptions/user_exception';
+import { IUserService } from '../interfaces/user.interface';
 
 @Injectable()
-export class UserService {
+export class UserService implements IUserService{
 
     private readonly logger = new Logger(UserService.name);
 
@@ -19,7 +20,7 @@ export class UserService {
     ) {
     }
 
-    async saveUser(user:  User, userType: EUserType): Promise<void> {
+    async saveUser(user: User, userType: EUserType): Promise<void> {
         try {
             this.logger.log(`inicia almacenamiento del usuario en base de datos con info ${JSON.stringify(user)}`);
             const userInfo = await this.userRepository.save(user);
@@ -34,13 +35,31 @@ export class UserService {
     async getUserInfo(documentNumber: string): Promise<User> {
         this.logger.log(`[CC:${documentNumber}] inicia obtención de la info del usuario`);
         return this.userRepository.findOne({
-                where: {
-                    documentNumber: documentNumber,
-                },
-            }
-        ).then(userInfo => {
+            where: {
+                documentNumber: documentNumber,
+            },
+        }).then(userInfo => {
             if (userInfo != null) {
                 this.logger.log(`[CC:${documentNumber}] finaliza obtención de la info del usuario con resultado: ${JSON.stringify(userInfo)}`);
+                return userInfo;
+            } else {
+                throw new UserException("El usuario no existe en base de datos", HttpStatus.NOT_FOUND);
+            }
+        }).catch(err => {
+            this.logger.error(err.message);
+            throw new UserException(err.message, err.status);
+        });
+    }
+
+    async getUserInfoByCellphone(cellphone: string): Promise<User> {
+        this.logger.log(`[CEL:${cellphone}] inicia obtención de la info del usuario por número de celular`);
+        return this.userRepository.findOne({
+            where: {
+                cellphone: cellphone,
+            },
+        }).then(userInfo => {
+            if (userInfo != null) {
+                this.logger.log(`[CEL:${cellphone}] finaliza obtención de la info del usuario por número de celular con resultado: ${JSON.stringify(userInfo)}`);
                 return userInfo;
             } else {
                 throw new UserException("El usuario no existe en base de datos", HttpStatus.NOT_FOUND);
