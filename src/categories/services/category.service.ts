@@ -1,9 +1,9 @@
-import {HttpStatus, Injectable, Logger} from '@nestjs/common';
-import {Repository} from 'typeorm';
-import {InjectRepository} from '@nestjs/typeorm';
-import {Category} from '../../database/entities/Category';
-import {CategoriesException} from '../../exceptions/categories_exception';
-import {Service} from '../../database/entities/Service';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Category } from '../../database/entities/Category';
+import { CategoriesException } from '../../exceptions/categories_exception';
+import { Service } from '../../database/entities/Service';
 
 @Injectable()
 export class CategoryService {
@@ -34,9 +34,15 @@ export class CategoryService {
             });
     }
 
-    async getServicesByCategory(categoryId: number) {
+    async getServicesByCategory(categoryId: number): Promise<Service[]> {
         this.logger.log("inicia consulta de los servicios por categoria");
         return this.serviceRepository.find({
+            select: {
+                createdAt: true,
+                description: true,
+                id: true,
+                updatedAt: true
+            },
             relations: {
                 category: true,
             },
@@ -46,12 +52,12 @@ export class CategoryService {
                 },
             },
         }).then(response => {
-            const services = [];
-            response.forEach(service => {
-                services.push(service.description);
-            });
-            this.logger.log(`finaliza consulta de los servicios por categoria con resultado: ${JSON.stringify(services)}`);
-            return services;
+            if (response.length > 0) {
+                this.logger.log(`finaliza consulta de los servicios por categoria con resultado: ${JSON.stringify(response)}`);
+                return response;
+            } else {
+                throw new CategoriesException("No se encontraron servicios para esta categoria", HttpStatus.NOT_FOUND);
+            }
         }).catch(() => {
             throw new CategoriesException("Ocurrió un error al consultar los servicios", HttpStatus.INTERNAL_SERVER_ERROR);
         })

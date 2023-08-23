@@ -16,6 +16,9 @@ export class Address {
     @Column()
     city: string;
 
+    @Column({name: 'main_address'})
+    mainAddress: boolean;
+
     @ManyToOne(() => User, (user) => user.id)
     @JoinColumn({ name: 'user_id' })
     userId: User;
