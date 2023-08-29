@@ -8,6 +8,9 @@ import { UserModule } from './users/user.module';
 import { WorkerModule } from './worker/worker.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ServicesModule } from './services/services.module';
+import { RatingsModule } from './ratings/ratings.module';
+import { ClientModule } from './client/client.module';
+import { ContractModule } from './contract/contract.module';
 
 @Module({
     imports: [ConfigModule.forRoot({isGlobal: true, load: [configuration]}),
@@ -17,6 +20,9 @@ import { ServicesModule } from './services/services.module';
         WorkerModule,
         CategoriesModule,
         ServicesModule,
+        RatingsModule,
+        ContractModule,
+        ClientModule,
         DatabaseModule],
     controllers: [],
     providers: [],

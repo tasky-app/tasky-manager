@@ -1,4 +1,4 @@
-import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
 import {Category} from './Category';
 import { Service } from './Service';
 
@@ -12,9 +12,11 @@ export class TopService {
     @JoinColumn({name: 'service_id', referencedColumnName: 'id'})
     service: Service;
 
-    @Column({name: 'created_at'})
+    @Column()
+    @CreateDateColumn({name: 'created_at'})
     createdAt: Date;
 
-    @Column({name: 'updated_at'})
+    @Column()
+    @UpdateDateColumn({name: 'updated_at'})
     updatedAt: Date;
 }
