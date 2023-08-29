@@ -3,10 +3,11 @@ import { Worker } from "src/database/entities/Worker";
 import { EWorkerStatus } from "../enums/worker_status_enum";
 
 export interface IWorkerService {
-    getWorkerServices(documentNumber: string);
-    saveWorkerServices(documentNumber: string, services: Service[]);
-    getWorkerInfo(documentNumber: string);
-    saveWorkerInfo(documentNumber: string, worker: Worker);
-    updateWorkerState(documentNumber: string, status: EWorkerStatus);
+    getWorkerServices(cellphone: string);
+    saveWorkerServices(cellphone: string, services: Service[]);
+    getWorkerInfo(cellphone: string);
+    saveWorkerInfo(cellphone: string, worker: Worker);
+    updateWorkerState(cellphone: string, status: EWorkerStatus);
     getTopWorkers(cellphone: string): Promise<Worker[]>;
+    getWorkersByService(serviceId: number): Promise<Worker[]>;
 }

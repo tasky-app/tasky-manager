@@ -1,6 +1,6 @@
-import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
-import { Client } from './Client';
+import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
 import { Worker } from './Worker';
+import { Contract } from './Contract';
 
 @Entity({name: 'ratings'})
 export class Ratings {
@@ -14,9 +14,9 @@ export class Ratings {
     @CreateDateColumn({name: 'created_at'})
     createdAt: Date;
 
-    @ManyToOne(() => Client, (client) => client.id)
-    @JoinColumn({name: 'client_id', referencedColumnName: 'id'})
-    client: Client;
+    @OneToOne(() => Contract)
+    @JoinColumn({name: 'contract_id', referencedColumnName: 'id'})
+    contract: Contract;
 
     @ManyToOne(() => Worker, (worker) => worker.id)
     @JoinColumn({name: 'worker_id', referencedColumnName: 'id'})

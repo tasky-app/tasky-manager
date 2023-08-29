@@ -4,7 +4,6 @@ import { User } from '../../database/entities/User';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from '../../database/entities/Client';
 import { Worker } from '../../database/entities/Worker';
-import { EUserType } from '../enums/user_type';
 import { UserException } from '../../exceptions/user_exception';
 import { IUserService } from '../interfaces/user.interface';
 import { Category } from 'src/database/entities/Category';

@@ -23,6 +23,9 @@ export class WorkerService implements IWorkerService {
         
     ) {
     }
+    getWorkersByService(serviceId: number): Promise<Worker[]> {
+        throw new Error('Method not implemented.');
+    }
     async getTopWorkers(cellphone: string): Promise<Worker[]> {
         this.logger.log(`inicia`)
 
@@ -30,15 +33,9 @@ export class WorkerService implements IWorkerService {
             relations: {
                 worker: true,
             },
-            where: {
-                worker: {
-                    user: {
-                        cellphone: cellphone,
-                    },
-                },
-            },
         })
             .then(response => {
+                this.logger.log(`initt`)
                 this.logger.log(` ${JSON.stringify(response)}`)
                 // if (response.length > 0) {
                 //     this.logger.log(`[CEL: ${cellphone}] finaliza consulta de los servicios asociados al profesional con resultado: ${JSON.stringify(response)}`)
@@ -46,7 +43,7 @@ export class WorkerService implements IWorkerService {
                 // } else {
                 //     const msg = `[CEL: ${cellphone}] el profesional no tiene servicios asignados`
                 //     this.logger.error(msg);
-                //     throw new WorkerException(msg, HttpStatus.NOT_ACCEPTABLE);
+                //     throw new WorkerException(msg, HttpStatus.NOT_ACELEPTABLE);
                 // }
                 return [];
             })
@@ -56,21 +53,21 @@ export class WorkerService implements IWorkerService {
             });
     }
 
-    async getWorkerServices(documentNumber: string) {
-        this.logger.log(`[CC: ${documentNumber}] inicia consulta de las servicios asociados al profesional`)
+    async getWorkerServices(cellphone: string) {
+        this.logger.log(`[CEL: ${cellphone}] inicia consulta de las servicios asociados al profesional`)
         return this.workerServicesRepository.createQueryBuilder("worker_services")
             .leftJoinAndSelect("worker_services.worker", "worker")
             .leftJoinAndSelect("worker_services.service", "service")
             .leftJoinAndSelect("worker.userId", "user")
-            .where("user.document_number = :documentNumber", { documentNumber: documentNumber })
+            .where("user.cellphone = :cellphone", { cellphone: cellphone })
             .select("service")
             .getRawMany()
             .then(response => {
                 if (response.length > 0) {
-                    this.logger.log(`[CC: ${documentNumber}] finaliza consulta de los servicios asociados al profesional con resultado: ${JSON.stringify(response)}`)
+                    this.logger.log(`[CEL: ${cellphone}] finaliza consulta de los servicios asociados al profesional con resultado: ${JSON.stringify(response)}`)
                     return response;
                 } else {
-                    const msg = `[CC: ${documentNumber}] el profesional no tiene servicios asignados`
+                    const msg = `[CEL: ${cellphone}] el profesional no tiene servicios asignados`
                     this.logger.error(msg);
                     throw new WorkerException(msg, HttpStatus.NOT_ACCEPTABLE);
                 }
@@ -81,67 +78,67 @@ export class WorkerService implements IWorkerService {
             });
     }
 
-    async saveWorkerServices(documentNumber: string, services: Service[]) {
-        this.logger.log(`[CC: ${documentNumber}] inicia guardado del servicio del profesional`)
-        const worker = await this.getWorkerInfo(documentNumber);
+    async saveWorkerServices(cellphone: string, services: Service[]) {
+        this.logger.log(`[CEL: ${cellphone}] inicia guardado del servicio del profesional`)
+        const worker = await this.getWorkerInfo(cellphone);
         for (const service of services) {
             const workerServices = new WorkerServices();
             workerServices.worker = worker;
             workerServices.service = service;
             await this.workerServicesRepository.save(workerServices)
                 .then(() => {
-                    this.logger.log(`[CC: ${documentNumber}] finaliza guardado del servicio del profesional - Services: ${JSON.stringify(service)}`);
+                    this.logger.log(`[CEL: ${cellphone}] finaliza guardado del servicio del profesional - Services: ${JSON.stringify(service)}`);
                 })
                 .catch(err => {
-                    const msg = `[CC: ${documentNumber} Ocurrió un error al guardar del servicio del profesional - Services: ${JSON.stringify(service)}]`
+                    const msg = `[CEL: ${cellphone} Ocurrió un error al guardar del servicio del profesional - Services: ${JSON.stringify(service)}]`
                     this.logger.error(msg, err);
                     throw new WorkerException(msg, HttpStatus.INTERNAL_SERVER_ERROR)
                 });
         }
     }
 
-    async getWorkerInfo(documentNumber: string) {
-        this.logger.log(`[CC: ${documentNumber}] inicia obtención de la información del profesional`)
-        return this.workerRepository.find({
+    async getWorkerInfo(cellphone: string) {
+        this.logger.log(`[CEL: ${cellphone}] inicia obtención de la información del profesional`)
+        return this.workerRepository.findOne({
             relations: {
                 user: true,
             },
             where: {
                 user: {
-                    documentNumber: documentNumber,
+                    cellphone: cellphone,
                 },
             },
         }).then(response => {
-            this.logger.log(`[CC: ${documentNumber}] finaliza obtención de la información del profesional con resultado: ${JSON.stringify(response)}`)
-            return response[0];
+            this.logger.log(`[CEL: ${cellphone}] finaliza obtención de la información del profesional con resultado: ${JSON.stringify(response)}`)
+            return response;
         }).catch(err => {
-            const msg = `[CC: ${documentNumber}] ocurrió un error al obtener la información del profesional ${JSON.stringify(err)}`
+            const msg = `[CEL: ${cellphone}] ocurrió un error al obtener la información del profesional ${JSON.stringify(err)}`
             this.logger.error(msg, err)
             throw new WorkerException(msg, HttpStatus.INTERNAL_SERVER_ERROR)
         });
     }
 
-    async saveWorkerInfo(documentNumber: string, worker: Worker) {
-        this.logger.log(`[CC: ${documentNumber}] inicia guardado de la información del profesional`)
-        const workerInfo = await this.mapWorkerInfo(documentNumber, worker);
+    async saveWorkerInfo(cellphone: string, worker: Worker) {
+        this.logger.log(`[CEL: ${cellphone}] inicia guardado de la información del profesional`)
+        const workerInfo = await this.mapWorkerInfo(cellphone, worker);
         await this.saveWorkerInBd(workerInfo);
     }
 
-    async updateWorkerState(documentNumber: string, status: EWorkerStatus) {
-        this.logger.log(`[CC: ${documentNumber}] inicia actualización del estado del profesional`)
-        const workerInfo = await this.getWorkerInfo(documentNumber);
+    async updateWorkerState(cellphone: string, status: EWorkerStatus) {
+        this.logger.log(`[CEL: ${cellphone}] inicia actualización del estado del profesional`)
+        const workerInfo = await this.getWorkerInfo(cellphone);
         workerInfo.workerStatus = await this.getWorkerStatus(status);
         await this.saveWorkerInBd(workerInfo);
-        this.logger.log(`[CC: ${documentNumber}] finaliza actualización del estado del profesional`)
+        this.logger.log(`[CEL: ${cellphone}] finaliza actualización del estado del profesional`)
     }
 
     private async saveWorkerInBd(worker: Worker) {
         this.workerRepository.save(worker)
             .then(() => {
-                this.logger.log(`[CC: ${worker.user.documentNumber}] finaliza guardado de la información del profesional`)
+                this.logger.log(`[CEL: ${worker.user.cellphone}] finaliza guardado de la información del profesional`)
             })
             .catch(err => {
-                const msg = `[CC: ${worker.user.documentNumber}] ocurrió un error al guardar la información del profesional ${JSON.stringify(err)}`
+                const msg = `[CEL: ${worker.user.cellphone}] ocurrió un error al guardar la información del profesional ${JSON.stringify(err)}`
                 this.logger.error(msg, err)
                 throw new WorkerException(msg, HttpStatus.INTERNAL_SERVER_ERROR)
             });
@@ -163,8 +160,8 @@ export class WorkerService implements IWorkerService {
         })
     }
 
-    private async mapWorkerInfo(documentNumber: string, worker: Worker) {
-        const workerInfo = await this.getWorkerInfo(documentNumber);
+    private async mapWorkerInfo(cellphone: string, worker: Worker) {
+        const workerInfo = await this.getWorkerInfo(cellphone);
         workerInfo.fee = worker.fee;
         workerInfo.startHour = worker.startHour;
         workerInfo.finalHour = worker.finalHour;
