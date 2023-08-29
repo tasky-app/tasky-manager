@@ -9,6 +9,7 @@ export class CategoryController {
     constructor(private readonly categoryService: CategoryService) {
     }
 
+    //OK - 27/08/2023
     @Get()
     public async getCategories() {
         this.logger.log(`INICIA OBTENCIÓN DE LAS CATEGORÍAS`);
@@ -17,6 +18,7 @@ export class CategoryController {
         return categories;
     }
 
+    //OK - 27/08/2023
     @Get("services")
     public async getServicesByCategory(@Headers() headers) {
         this.logger.log(`INICIA OBTENCIÓN DE LOS SERVICIOS DE LA CATEGORÍA CON ID ${headers.category_id}`);
@@ -24,6 +26,4 @@ export class CategoryController {
         this.logger.log(`INICIA OBTENCIÓN DE LOS SERVICIOS DE LA CATEGORÍA CON ID ${headers.category_id}`);
         return services;
     }
-
-
 }

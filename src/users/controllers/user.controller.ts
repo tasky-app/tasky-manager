@@ -10,21 +10,35 @@ export class UserController {
     constructor(private readonly userService: UserService) {
     }
 
-    @Post()
-    public async createInDb(@Headers() headers, @Body() user: User): Promise<void> {
-        this.logger.log(`[CC: ${user.documentNumber}] INICIA CREACIÓN DEL USUARIO EN BASE DE DATOS`);
-        await this.userService.saveUser(user, headers.user_type);
-        this.logger.log(`[CC: ${user.documentNumber}] FINALIZA CREACIÓN DEL USUARIO EN BASE DE DATOS`);
+    //OK - 27/08/2023
+    @Post("client")
+    public async createClientInDb(@Body() user: User): Promise<void> {
+        this.logger.log(`[CC: ${user.documentNumber}] INICIA CREACIÓN DE CLIENTE EN BASE DE DATOS`);
+        await this.userService.saveClient(user);
+        this.logger.log(`[CC: ${user.documentNumber}] FINALIZA CREACIÓN DE CLIENTE EN BASE DE DATOS`);
     }
 
+    //OK - 27/08/2023
+    @Post("worker")
+    public async createWorkerInDb(@Body() body): Promise<void> {
+        const user = body.user; 
+        const category = body.category;
+
+        this.logger.log(`[CC: ${user.documentNumber}] INICIA CREACIÓN DE PROFESIONAL EN BASE DE DATOS`);
+        await this.userService.saveWorker(user, category);
+        this.logger.log(`[CC: ${user.documentNumber}] FINALIZA CREACIÓN DE PROFESIONAL EN BASE DE DATOS`);
+    }
+
+    //OK - 27/08/2023
     @Get()
     public async userInfo(@Headers() headers) {
         this.logger.log(`[CC: ${headers.document_number}] INICIA OBTENCIÓN DE LA INFORMACIÓN DEL USUARIO`);
-        const user = await this.userService.getUserInfo(headers.document_number);
+        const user = await this.userService.getUserInfo(headers.cellphone);
         this.logger.log(`[CC: ${headers.document_number}] FINALIZA OBTENCIÓN DE LA INFORMACIÓN DEL USUARIO`);
         return user;
     }
 
+    //OK - 27/08/2023
     @Get("exists")
     public async userExistsInDb(@Headers() headers): Promise<boolean> {
         this.logger.log(`[CEL: ${headers.cellphone}] INICIA CONSULTA DE REGISTRO DEL USUARIO`);
@@ -33,6 +47,7 @@ export class UserController {
         return userExists;
     }
 
+    //TODO PENDING
     @Put()
     public async editUserInfo(@Headers() headers) {
         this.logger.log(`[CC: ${headers.documentNumber}] INICIA ACTUALIZACIÓN DE LA INFORMACIÓN DEL USUARIO EN BASE DE DATOS`);

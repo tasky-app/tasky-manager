@@ -1,6 +1,7 @@
 import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
 import {User} from './User';
 import {WorkerStatus} from './WorkerStatus';
+import { Category } from './Category';
 
 @Entity()
 export class Worker {
@@ -30,6 +31,10 @@ export class Worker {
     @OneToOne(() => User)
     @JoinColumn({name: 'user_id', referencedColumnName: 'id'})
     user: User;
+
+    @OneToOne(() => Category)
+    @JoinColumn({name: 'category_id', referencedColumnName: 'id'})
+    category: Category;
 
     @Column()
     @UpdateDateColumn({name: 'updated_at'})

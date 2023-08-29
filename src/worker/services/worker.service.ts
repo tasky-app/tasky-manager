@@ -1,21 +1,59 @@
-import {HttpStatus, Injectable, Logger} from '@nestjs/common';
-import {InjectRepository} from '@nestjs/typeorm';
-import {Worker} from '../../database/entities/Worker';
-import {Repository} from 'typeorm';
-import {WorkerServices} from '../../database/entities/WorkerServices';
-import {WorkerException} from '../../exceptions/worker_exception';
-import {Service} from '../../database/entities/Service';
-import {EWorkerStatus} from '../enums/worker_status_enum';
-import {WorkerStatus} from '../../database/entities/WorkerStatus';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Worker } from '../../database/entities/Worker';
+import { Repository } from 'typeorm';
+import { WorkerServices } from '../../database/entities/WorkerServices';
+import { WorkerException } from '../../exceptions/worker_exception';
+import { Service } from '../../database/entities/Service';
+import { EWorkerStatus } from '../enums/worker_status_enum';
+import { WorkerStatus } from '../../database/entities/WorkerStatus';
+import { IWorkerService } from '../interfaces/worker.interface';
+import { Ratings } from 'src/database/entities/Ratings';
 
 @Injectable()
-export class WorkerService {
+export class WorkerService implements IWorkerService {
 
     private readonly logger = new Logger(WorkerService.name);
 
-    constructor(@InjectRepository(Worker) private readonly workerRepository: Repository<Worker>,
-                @InjectRepository(WorkerServices) private readonly workerServicesRepository: Repository<WorkerServices>,
-                @InjectRepository(WorkerStatus) private readonly workerStatusRepository: Repository<WorkerStatus>) {
+    constructor(
+        @InjectRepository(Worker) private readonly workerRepository: Repository<Worker>,
+        @InjectRepository(WorkerServices) private readonly workerServicesRepository: Repository<WorkerServices>,
+        @InjectRepository(WorkerStatus) private readonly workerStatusRepository: Repository<WorkerStatus>,
+        @InjectRepository(Ratings) private readonly ratingsRepository: Repository<Ratings>,
+        
+    ) {
+    }
+    async getTopWorkers(cellphone: string): Promise<Worker[]> {
+        this.logger.log(`inicia`)
+
+        return this.ratingsRepository.find({
+            relations: {
+                worker: true,
+            },
+            where: {
+                worker: {
+                    user: {
+                        cellphone: cellphone,
+                    },
+                },
+            },
+        })
+            .then(response => {
+                this.logger.log(` ${JSON.stringify(response)}`)
+                // if (response.length > 0) {
+                //     this.logger.log(`[CEL: ${cellphone}] finaliza consulta de los servicios asociados al profesional con resultado: ${JSON.stringify(response)}`)
+                //     return response;
+                // } else {
+                //     const msg = `[CEL: ${cellphone}] el profesional no tiene servicios asignados`
+                //     this.logger.error(msg);
+                //     throw new WorkerException(msg, HttpStatus.NOT_ACCEPTABLE);
+                // }
+                return [];
+            })
+            .catch(err => {
+                this.logger.error(err);
+                throw err;
+            });
     }
 
     async getWorkerServices(documentNumber: string) {
@@ -24,8 +62,8 @@ export class WorkerService {
             .leftJoinAndSelect("worker_services.worker", "worker")
             .leftJoinAndSelect("worker_services.service", "service")
             .leftJoinAndSelect("worker.userId", "user")
-            .where("user.document_number = :documentNumber", {documentNumber: documentNumber})
-            .select("service.description", "name")
+            .where("user.document_number = :documentNumber", { documentNumber: documentNumber })
+            .select("service")
             .getRawMany()
             .then(response => {
                 if (response.length > 0) {

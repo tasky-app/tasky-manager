@@ -1,7 +1,7 @@
-import {Body, Controller, Get, Headers, HttpException, Logger, Post, Put} from '@nestjs/common';
-import {WorkerService} from '../services/worker.service';
-import {Worker} from '../../database/entities/Worker';
-import {TaskyException} from '../../exceptions/tasky_exception';
+import { Body, Controller, Get, Headers, HttpException, Logger, Post, Put } from '@nestjs/common';
+import { WorkerService } from '../services/worker.service';
+import { Worker } from '../../database/entities/Worker';
+import { TaskyException } from '../../exceptions/tasky_exception';
 
 @Controller("worker")
 export class WorkerController {
@@ -56,5 +56,15 @@ export class WorkerController {
             throw new TaskyException(err.status);
         });
         this.logger.log(`[CC:${headers.document_number}] FINALIZA ACTUALIZACIÓN DE ESTADO DEL PROFESIONAL`)
+    }
+
+    @Get("top")
+    async getTopWorkers(@Headers() headers) {
+        this.logger.log(`[CC:${headers.document_number}] INICIA OBTENCIÓN DE LOS PROFESIONALES DESTACADOS`)
+        const workers = await this.workerService.getTopWorkers(headers.cellphone).catch(err => {
+            throw new TaskyException(err.status);
+        });
+        this.logger.log(`[CC:${headers.document_number}] FINALIZA OBTENCIÓN DE LOS PROFESIONALES DESTACADOS`)
+        return workers;
     }
 }
