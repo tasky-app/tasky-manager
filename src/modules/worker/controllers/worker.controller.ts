@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Headers, HttpException, Logger, Post, Put } from '@nestjs/common';
 import { WorkerService } from '../services/worker.service';
-import { Worker } from '../../database/entities/Worker';
-import { TaskyException } from '../../exceptions/tasky_exception';
+import { TaskyException } from 'src/exceptions/tasky_exception';
+import { Worker } from 'src/database/entities/Worker';
 
 @Controller("worker")
 export class WorkerController {

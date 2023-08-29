@@ -1,6 +1,6 @@
 import {Test, TestingModule} from "@nestjs/testing";
-import {AddressController} from '../../../src/address/controllers/address.controller';
-import {AddressService} from '../../../src/address/services/address.service';
+import {AddressController} from '../../../src/modules/address/controllers/address.controller';
+import {AddressService} from '../../../src/modules/address/services/address.service';
 import {Address} from '../../../src/database/entities/Address';
 import {getRepositoryToken} from '@nestjs/typeorm';
 import {ContactInfo} from '../../../src/database/entities/ContactInfo';

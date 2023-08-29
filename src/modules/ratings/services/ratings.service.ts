@@ -4,7 +4,7 @@ import { IRatingsService } from "../interfaces/ratings.interface";
 import { Ratings } from "src/database/entities/Ratings";
 import { Repository } from "typeorm";
 import { SaveRatingDto } from "../dto/saveRatingDto";
-import { ContractService } from "src/contract/services/contract.service";
+import { ContractService } from "src/modules/contract/services/contract.service";
 
 @Injectable()
 export class RatingsService implements IRatingsService {

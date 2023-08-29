@@ -1,8 +1,8 @@
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Address } from '../../database/entities/Address';
-import { AddressException } from '../../exceptions/address_exception';
+import { Address } from '../../../database/entities/Address';
+import { AddressException } from '../../../exceptions/address_exception';
 import { UserService } from '../../users/services/user.service';
 
 @Injectable()
