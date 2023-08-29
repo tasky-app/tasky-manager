@@ -4,5 +4,4 @@ import { Service } from "src/database/entities/Service";
 export interface ICategoryService {
     getCategories(): Promise<Category[]>;
     getServicesByCategory(categoryId: number): Promise<Service[]>;
-
 }

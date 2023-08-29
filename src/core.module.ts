@@ -1,12 +1,13 @@
 import {Module} from '@nestjs/common';
 import {ConfigModule} from '@nestjs/config';
 import configuration from '../config/configuration';
-import {VerifyModule} from './verify/verify.module';
-import {UserModule} from './users/user.module';
 import {DatabaseModule} from './database/database.module';
-import {CategoriesModule} from './categories/categories.module';
 import {AddressModule} from './address/address.module';
-import {WorkerModule} from './worker/worker.module';
+import { VerifyModule } from './verify/verify.module';
+import { UserModule } from './users/user.module';
+import { WorkerModule } from './worker/worker.module';
+import { CategoriesModule } from './categories/categories.module';
+import { ServicesModule } from './services/services.module';
 
 @Module({
     imports: [ConfigModule.forRoot({isGlobal: true, load: [configuration]}),
@@ -15,6 +16,7 @@ import {WorkerModule} from './worker/worker.module';
         AddressModule,
         WorkerModule,
         CategoriesModule,
+        ServicesModule,
         DatabaseModule],
     controllers: [],
     providers: [],

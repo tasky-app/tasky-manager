@@ -5,9 +5,10 @@ import {WorkerController} from './controllers/worker.controller';
 import {WorkerServices} from '../database/entities/WorkerServices';
 import {WorkerService} from './services/worker.service';
 import {WorkerStatus} from '../database/entities/WorkerStatus';
+import { Ratings } from 'src/database/entities/Ratings';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Worker, WorkerServices, WorkerStatus])],
+    imports: [TypeOrmModule.forFeature([Worker, WorkerServices, WorkerStatus, Ratings])],
     providers: [WorkerService],
     controllers: [WorkerController]
 })

@@ -82,6 +82,7 @@ export class AddressService {
         addressEntity.address = address.address;
         addressEntity.city = address.city;
         addressEntity.neighborhood = address.neighborhood;
+        addressEntity.mainAddress = address.mainAddress;
         addressEntity.userId = user;
 
         return this.addressRepository.save(addressEntity).then(addressResponse => {
@@ -117,7 +118,6 @@ export class AddressService {
         const actualMainAddress = await this.getMainAddress(cellphone);
         this.updateMainAddressQuery(cellphone, false, actualMainAddress.addressId);
     }
-
 
     async deleteAddress(cellphone: string, address: Address) {
         this.logger.log(`[CEL: ${cellphone}] inicia proceso de eliminación de la dirección ${address.address}`);

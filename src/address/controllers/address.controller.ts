@@ -10,6 +10,7 @@ export class AddressController {
     constructor(private readonly addressService: AddressService) {
     }
 
+    //OK - 27/08/2023
     @Get()
     public async getAddresses(@Headers() headers) {
         this.logger.log(`[CEL: ${headers.cellphone}] INICIA OBTENCIÓN DE LAS DIRECCIONES DEL CLIENTE`);
@@ -18,6 +19,7 @@ export class AddressController {
         return addresses;
     }
 
+    //OK - 27/08/2023
     @Get('main')
     public async getMainAddress(@Headers() headers) {
         this.logger.log(`[CEL: ${headers.cellphone}] INICIA OBTENCIÓN DE LAS DIRECCIONES DEL CLIENTE`);
@@ -26,6 +28,7 @@ export class AddressController {
         return addresses;
     }
 
+    //TODO PENDING
     @Put('main')
     public async updateMainAddress(@Headers() headers, @Body() body: Address) {
         this.logger.log(`[CEL: ${headers.cellphone}] INICIA ACTUALIZACIÓN DE LA DIRECCIÓN DEL CLIENTE`);
@@ -34,6 +37,7 @@ export class AddressController {
         return addresses;
     }
 
+    //OK - 27/08/2023
     @Post()
     public async saveAddressInDb(@Headers() headers, @Body() body: Address) {
         this.logger.log(`[CEL: ${headers.cellphone}] INICIA REGISTRO DE LA DIRECCIÓN DEL CLIENTE`);
@@ -42,6 +46,7 @@ export class AddressController {
         return address;
     }
 
+    //OK - 27/08/2023
     @Delete()
     public async deleteAddressFromDb(@Headers() headers, @Body() body) {
         this.logger.log(`[CEL: ${headers.cellphone}] INICIA ELIMINACIÓN DE LA DIRECCIÓN DEL CLIENTE`);

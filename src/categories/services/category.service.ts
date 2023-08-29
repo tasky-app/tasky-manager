@@ -48,7 +48,7 @@ export class CategoryService {
             },
             where: {
                 category: {
-                    categoryId: categoryId,
+                    id: categoryId,
                 },
             },
         }).then(response => {

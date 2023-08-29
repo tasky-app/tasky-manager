@@ -7,8 +7,8 @@ export class Service {
     @PrimaryGeneratedColumn({name: 'service_id'})
     id: number;
 
-    @ManyToOne(() => Category, (category) => category.categoryId)
-    @JoinColumn({name: 'category_id', referencedColumnName: 'categoryId'})
+    @ManyToOne(() => Category, (category) => category.id)
+    @JoinColumn({name: 'category_id', referencedColumnName: 'id'})
     category: Category;
 
     @Column({name: 'created_at'})

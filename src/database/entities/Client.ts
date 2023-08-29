@@ -8,5 +8,5 @@ export class Client {
 
     @OneToOne(() => User)
     @JoinColumn({name: 'user_id', referencedColumnName: 'id'})
-    userId: User;
+    user: User;
 }
