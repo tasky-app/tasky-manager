@@ -2,7 +2,7 @@
 
 my_var="contract"
 # Open source folder
-cd src
+cd src/modules
 echo ------  $my_var
 
 ls
