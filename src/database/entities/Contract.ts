@@ -9,9 +9,6 @@ import { ContractStatus } from "./ContractStatus";
 export class Contract {
     @PrimaryGeneratedColumn({name: 'contract_id'})
     id: number;
-
-    @Column({name: 'value'})
-    value: number;
     
     @Column()
     @CreateDateColumn({name: 'created_at'})
