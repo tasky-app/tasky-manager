@@ -21,19 +21,19 @@ export class WorkerService implements IWorkerService {
         @InjectRepository(WorkerServices) private readonly workerServicesRepository: Repository<WorkerServices>,
         @InjectRepository(WorkerStatus) private readonly workerStatusRepository: Repository<WorkerStatus>,
         @InjectRepository(Ratings) private readonly ratingsRepository: Repository<Ratings>,
-        
     ) {
     }
     
     getWorkersByService(serviceId: number): Promise<Worker[]> {
         throw new Error('Method not implemented.');
     }
+    
     async getTopWorkers(cellphone: string): Promise<Worker[]> {
         this.logger.log(`inicia`)
 
         return this.ratingsRepository.find({
             relations: {
-                worker: true,
+                
             },
         })
             .then(response => {

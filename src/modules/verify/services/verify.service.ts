@@ -1,7 +1,7 @@
 import { ENotificationChannel } from "../enums/notification_channel";
 import { HttpException, HttpStatus, Inject, Injectable, Logger } from "@nestjs/common";
+import configuration from "config/configuration";
 import { Twilio } from "twilio";
-import configuration from "../../../config/configuration";
 
 const verifySid = configuration().twilio_verify_sid;
 

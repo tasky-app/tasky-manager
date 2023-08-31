@@ -5,7 +5,7 @@ import {User} from './User';
 export class Address {
 
     @PrimaryGeneratedColumn({name: 'address_id'})
-    addressId: number;
+    id: number;
 
     @Column()
     address: string;

@@ -16,7 +16,7 @@ export class ServicesController {
     public async getTopServices(): Promise<TopService[]> {
         this.logger.log(`INICIA OBTENCIÓN DE LOS SERVICIOS DESTACADOS`);
         const topServices = this.servicesService.getTopServices();
-        this.logger.log(`FINALIZA OBTENCIÓN DE LOS SERVICIOS DESTACADOS`);
+        this.logger.log(`FINALIZA OBTENCIÓN DE LOS SERVICIOS DESTACADOS CON RESULTADO -> ${JSON.stringify(topServices)}`);
         return topServices;
     }
 
@@ -25,7 +25,7 @@ export class ServicesController {
     public async getAllServices(): Promise<Service[]> {
         this.logger.log(`INICIA OBTENCIÓN DE TODOS LOS SERVICIOS`);
         const services = this.servicesService.getAllServices();
-        this.logger.log(`FINALIZA OBTENCIÓN DE TODOS LOS SERVICIOS`);
+        this.logger.log(`FINALIZA OBTENCIÓN DE TODOS LOS SERVICIOS CON RESULTADO -> ${JSON.stringify(services)}`);
         return services;
     }
 }

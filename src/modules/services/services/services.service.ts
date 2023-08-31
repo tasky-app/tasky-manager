@@ -12,7 +12,7 @@ export class ServicesService implements IServicesService{
 
     constructor(
         @InjectRepository(TopService) private readonly topServiceRepository: Repository<TopService>,
-        @InjectRepository(Service) private readonly serviceRepository: Repository<Service>
+        @InjectRepository(Service) private readonly serviceRepository: Repository<Service>,
     ) {
     }
 
@@ -34,6 +34,6 @@ export class ServicesService implements IServicesService{
     }
 
     getTopServices(): Promise<TopService[]> {
-        return this.topServiceRepository.find()
+        return this.topServiceRepository.find({ relations: { service: true }})
     }
 }

@@ -17,8 +17,4 @@ export class Ratings {
     @OneToOne(() => Contract)
     @JoinColumn({name: 'contract_id', referencedColumnName: 'id'})
     contract: Contract;
-
-    @ManyToOne(() => Worker, (worker) => worker.id)
-    @JoinColumn({name: 'worker_id', referencedColumnName: 'id'})
-    worker: Worker;
 }

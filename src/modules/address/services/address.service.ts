@@ -4,25 +4,35 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Address } from '../../../database/entities/Address';
 import { AddressException } from '../../../exceptions/address_exception';
 import { UserService } from '../../users/services/user.service';
+import { IAddressService } from '../interfaces/address.interface';
 
 @Injectable()
-export class AddressService {
-
-    @Inject(UserService)
-    private readonly userService: UserService;
+export class AddressService implements IAddressService {
 
     private readonly logger = new Logger(AddressService.name);
 
     constructor(
-        @InjectRepository(Address) private readonly addressRepository: Repository<Address>
+        @InjectRepository(Address) private readonly addressRepository: Repository<Address>,
+        private readonly userService: UserService
     ) {
+    }
+
+    async getAddressById(addressId: number): Promise<Address> {
+        this.logger.log(`[ID: ${addressId}] inicia consulta de la dirección por id`);
+        return this.addressRepository.findOneBy({ id: addressId }).then(address => {
+            this.logger.log(`[ID: ${addressId}] finaliza consulta de la dirección por id con resultado: ${JSON.stringify(address)}`);
+            return address;
+        }).catch(err => {
+            this.logger.error(`[ID: ${addressId}] ocurrió un error al consultar la dirección por id: ${JSON.stringify(err)}`);
+            throw new AddressException("Ocurrió un error al consultar la dirección", HttpStatus.INTERNAL_SERVER_ERROR)
+        });
     }
 
     async getAddress(cellphone: string): Promise<Address[]> {
         this.logger.log(`[CEL: ${cellphone}] inicia consulta de las direcciones del cliente`);
         return this.addressRepository.find({
             select: {
-                addressId: true,
+                id: true,
                 city: true,
                 mainAddress: true,
                 neighborhood: true,
@@ -50,7 +60,7 @@ export class AddressService {
         this.logger.log(`[CEL: ${cellphone}] inicia consulta de la dirección principal del cliente`);
         return this.addressRepository.find({
             select: {
-                addressId: true,
+                id: true,
                 city: true,
                 mainAddress: true,
                 neighborhood: true,
@@ -97,7 +107,21 @@ export class AddressService {
     async updateMainAddress(cellphone: string, address: Address) {
         this.logger.log(`[CEL: ${cellphone}] inicia proceso de actualización de la dirección en base de datos: ${JSON.stringify(address)}`);
         await this.disableCurrentMainAddress(cellphone);
-        this.updateMainAddressQuery(cellphone, true, address.addressId);
+        this.updateMainAddressQuery(cellphone, true, address.id);
+    }
+
+    async deleteAddress(cellphone: string, address: Address) {
+        this.logger.log(`[CEL: ${cellphone}] inicia proceso de eliminación de la dirección ${address.address}`);
+        await this.addressRepository.createQueryBuilder('delete_address')
+            .delete()
+            .from(Address)
+            .where("address_id = :id", { id: address.id })
+            .execute().then(() => {
+                this.logger.log(`[CEL: ${cellphone}] finaliza proceso de eliminación de la dirección ${address.address}`);
+            }).catch(err => {
+                this.logger.log(`[CEL: ${cellphone}] ocurrió un error al eliminar la dirección ${JSON.stringify(err)}`);
+                throw new AddressException("Ocurrió un error al eliminar la dirección", HttpStatus.INTERNAL_SERVER_ERROR)
+            })
     }
 
     private updateMainAddressQuery(cellphone: string, isMainAddress: boolean, addressId: number) {
@@ -116,20 +140,6 @@ export class AddressService {
 
     private async disableCurrentMainAddress(cellphone: string) {
         const actualMainAddress = await this.getMainAddress(cellphone);
-        this.updateMainAddressQuery(cellphone, false, actualMainAddress.addressId);
-    }
-
-    async deleteAddress(cellphone: string, address: Address) {
-        this.logger.log(`[CEL: ${cellphone}] inicia proceso de eliminación de la dirección ${address.address}`);
-        await this.addressRepository.createQueryBuilder('delete_address')
-            .delete()
-            .from(Address)
-            .where("address_id = :id", { id: address.addressId })
-            .execute().then(() => {
-                this.logger.log(`[CEL: ${cellphone}] finaliza proceso de eliminación de la dirección ${address.address}`);
-            }).catch(err => {
-                this.logger.log(`[CEL: ${cellphone}] ocurrió un error al eliminar la dirección ${JSON.stringify(err)}`);
-                throw new AddressException("Ocurrió un error al eliminar la dirección", HttpStatus.INTERNAL_SERVER_ERROR)
-            })
+        this.updateMainAddressQuery(cellphone, false, actualMainAddress.id);
     }
 }

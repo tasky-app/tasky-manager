@@ -1,9 +1,9 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Category } from '../../database/entities/Category';
-import { CategoriesException } from '../../exceptions/categories_exception';
-import { Service } from '../../database/entities/Service';
+import { Category } from 'src/database/entities/Category';
+import { Service } from 'src/database/entities/Service';
+import { CategoriesException } from 'src/exceptions/categories_exception';
 
 @Injectable()
 export class CategoryService {

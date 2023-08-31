@@ -7,8 +7,7 @@ import { ClientController } from "./controllers/client.controller";
 @Module({
     imports: [TypeOrmModule.forFeature([Client])],
     controllers: [ClientController],
-    providers: [
-      ClientService]
+    providers: [ClientService]
   })
   export class ClientModule {
   }
