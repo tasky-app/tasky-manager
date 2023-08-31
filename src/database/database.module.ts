@@ -1,14 +1,19 @@
-import {Global, Module} from '@nestjs/common';
-import {TypeOrmModule} from '@nestjs/typeorm';
+import { Global, Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration from '../../config/configuration';
-import {User} from './entities/User';
-import {Client} from './entities/Client';
-import {WorkerStatus} from './entities/WorkerStatus';
-import {Worker} from './entities/Worker';
-import {WorkerServices} from './entities/WorkerServices';
-import {Category} from './entities/Category';
-import {Address} from './entities/Address';
-import {Service} from './entities/Service';
+import { User } from './entities/User';
+import { Client } from './entities/Client';
+import { WorkerStatus } from './entities/WorkerStatus';
+import { Worker } from './entities/Worker';
+import { WorkerServices } from './entities/WorkerServices';
+import { Category } from './entities/Category';
+import { Address } from './entities/Address';
+import { Service } from './entities/Service';
+import { Contract } from './entities/Contract';
+import { ContractStatus } from './entities/ContractStatus';
+import { Password } from './entities/Password';
+import { Ratings } from './entities/Ratings';
+import { TopService } from './entities/TopServices';
 
 @Global()
 @Module({
@@ -20,14 +25,19 @@ import {Service} from './entities/Service';
         password: configuration().db_pass,
         database: configuration().db_name,
         entities: [
-            User,
-            Client,
-            Worker,
-            WorkerStatus,
-            WorkerServices,
-            Category,
             Address,
-            Service
+            Category,
+            Client,
+            Contract,
+            ContractStatus,
+            Password,
+            Ratings,
+            Service,
+            TopService,
+            User,
+            Worker,
+            WorkerServices,
+            WorkerStatus
         ],
         synchronize: false,
         autoLoadEntities: true

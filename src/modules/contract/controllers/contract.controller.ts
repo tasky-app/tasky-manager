@@ -7,14 +7,13 @@ export class ContractController {
 
     private readonly logger = new Logger(ContractController.name);
 
-    constructor(@Inject() private readonly contractService: ContractService) {
+    constructor(private readonly contractService: ContractService) {
     }
 
     @Post()
     async saveContract(@Body() request: SaveContractDto) {
-        this.logger.log(`[CLIENT CEL:${request.clientId}] INICIA CREACIÓN DE CONTRATO`)
-        this.contractService.createContract(request);
+        this.logger.log(`[CLIENT CEL:${request.clientId}] INICIA CREACIÓN DE CONTRATO CON INFO -> ${JSON.stringify(request)}`)
+        await this.contractService.createContract(request);
         this.logger.log(`[CLIENT CEL:${request.clientId}] FINALIZA CREACIÓN DE CONTRATO`)
-        return "OK";
     }
 }

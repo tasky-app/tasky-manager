@@ -7,9 +7,11 @@ import { SaveContractDto } from "../dto/saveContractDto";
 import { ClientService } from "src/modules/client/services/client.service";
 import { WorkerService } from "src/modules/worker/services/worker.service";
 import { ServicesService } from "src/modules/services/services/services.service";
+import { AddressService } from "src/modules/address/services/address.service";
 import { ContractStatus } from "src/database/entities/ContractStatus";
 import { EContractStatus } from "../enums/contractStatus";
 
+const HOUR_IN_MINUTES = 60;
 @Injectable()
 export class ContractService implements IContractService {
 
@@ -18,9 +20,10 @@ export class ContractService implements IContractService {
     constructor(
         @InjectRepository(Contract) private readonly contractRepository: Repository<Contract>,
         @InjectRepository(ContractStatus) private readonly contractStatusRepository: Repository<ContractStatus>,
-        @Inject() private readonly clientService: ClientService,
-        @Inject() private readonly workerService: WorkerService,
-        @Inject() private readonly serviceService: ServicesService,
+        private readonly addressService: AddressService,
+        private readonly serviceService: ServicesService,
+        private readonly workerService: WorkerService,
+        private readonly clientService: ClientService
     ) { }
 
     async createContract(request: SaveContractDto): Promise<void> {
@@ -42,17 +45,23 @@ export class ContractService implements IContractService {
             const client = await this.clientService.getClientInfo(request.clientId.toString());
             const worker = await this.workerService.getWorkerInfo(request.workerId.toString());
             const service = await this.serviceService.getServiceById(request.serviceId);
-            const endHour = new Date(request.estimatedStartHour.getHours() + request.estimatedTime.getHours());
+            const address = await this.addressService.getAddressById(request.addressId);
+            const contractStatus = await this.getContractStatus(EContractStatus.PENDING);
+            const estimatedStartHour = new Date(request.estimatedStartHour);
+            const estimatedContractHours = request.estimatedTime / HOUR_IN_MINUTES;
+            const endHour = estimatedStartHour;
+            endHour.setHours(estimatedStartHour.getHours() + estimatedContractHours);
 
             contract.client = client;
             contract.worker = worker;
             contract.service = service;
+            contract.address = address;
             contract.estimatedEndHour = endHour;
             contract.estimatedStartHour = request.estimatedStartHour;
             contract.estimatedTime = request.estimatedTime;
             contract.fee = worker.fee;
             contract.contractDate = request.contractDate;
-            contract.contractStatus = await this.getContractStatus(EContractStatus.PENDING);
+            contract.contractStatus = contractStatus;
             this.logger.log(`[CLIENT CEL:${request.clientId}] finaliza la construcción del contrato con resultado -> ${JSON.stringify(contract)}`)
             return contract;
         } catch (err) {
@@ -61,7 +70,8 @@ export class ContractService implements IContractService {
         }
     }
 
-    private getContractStatus(contractStatus: EContractStatus) {
+    private async getContractStatus(contractStatus: EContractStatus): Promise<ContractStatus> {
+        this.logger.log(`[CONTRACT STATUS: ${contractStatus}] inicia obtención del estado del contrato`)
         return this.contractStatusRepository.findOneBy({ status: contractStatus }).then(response => {
             this.logger.log(`[CONTRACT STATUS: ${contractStatus}] finaliza obtención del estado del contrato con resultado -> ${JSON.stringify(response)}`);
             return response;
@@ -73,9 +83,18 @@ export class ContractService implements IContractService {
 
     async getContractInfoById(contractId: number): Promise<Contract> {
         this.logger.log(`[CONTRACT ID: ${contractId}] inicia obtención de la información del contrato`)
-        return this.contractRepository.findOneBy({ id: contractId })
+        return this.contractRepository.findOne({
+            where: { id: contractId },
+            relations: {
+                client: { user: true },
+                worker: { user: true },
+                address: true,
+                contractStatus: true,
+                service: true,
+            }
+        })
             .then(response => {
-                this.logger.log(`[CONTRACT ID: ${contractId}] finaliza obtención de la información del contraton con resultado -> ${JSON.stringify(response)}`)
+                this.logger.log(`[CONTRACT ID: ${contractId}] finaliza obtención de la información del contrato con resultado -> ${JSON.stringify(response)}`)
                 return response;
             })
             .catch(() => {
@@ -83,4 +102,5 @@ export class ContractService implements IContractService {
                 throw new InternalServerErrorException("Error al obtener información de contrato")
             });
     }
+
 }

@@ -7,7 +7,7 @@ export class RatingsController {
 
     private readonly logger = new Logger(RatingsController.name);
 
-    constructor(@Inject() private readonly ratingsService: RatingsService) {
+    constructor(private readonly ratingsService: RatingsService) {
     }
 
     @Post()
@@ -16,6 +16,7 @@ export class RatingsController {
         return this.ratingsService.saveWorkerRating(headers.contract_id, headers.rating_value).then(() => {
             this.logger.log(`[CONTRACT ID:${headers.contract_id}] FINALIZA GUARDADO DE LA CALIFICACIÓN DE LOS SERVICIOS DEL CONTRATO`);
         }).catch(err => {
+            this.logger.error(err);
             throw new TaskyException(err.status);
         });
     }

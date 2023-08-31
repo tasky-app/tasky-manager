@@ -1,12 +1,12 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { User } from '../../database/entities/User';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Client } from '../../database/entities/Client';
-import { Worker } from '../../database/entities/Worker';
-import { UserException } from '../../exceptions/user_exception';
 import { IUserService } from '../interfaces/user.interface';
 import { Category } from 'src/database/entities/Category';
+import { Client } from 'src/database/entities/Client';
+import { Worker } from 'src/database/entities/Worker';
+import { User } from 'src/database/entities/User';
+import { UserException } from 'src/exceptions/user_exception';
 
 @Injectable()
 export class UserService implements IUserService {

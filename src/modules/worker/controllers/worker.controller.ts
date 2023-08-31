@@ -60,7 +60,7 @@ export class WorkerController {
 
     @Get("top")
     async getTopWorkers(@Headers() headers) {
-        this.logger.log(`[CEL:${headers.cellphone}] INICIA OBTENCIÓN DE LOS PROFESIONALES DESTACADOS`)
+        this.logger.log(`INICIA OBTENCIÓN DE LOS PROFESIONALES DESTACADOS`)
         const workers = await this.workerService.getTopWorkers(headers.cellphone).catch(err => {
             throw new TaskyException(err.status);
         });

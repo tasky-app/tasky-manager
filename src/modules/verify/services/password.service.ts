@@ -3,7 +3,7 @@ import { IPasswordService } from "../interfaces/password.interface";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Password } from "src/database/entities/Password";
 import { Repository } from "typeorm";
-import { UserService } from "src/users/services/user.service";
+import { UserService } from "src/modules/users/services/user.service";
 
 @Injectable()
 export class PasswordService implements IPasswordService {

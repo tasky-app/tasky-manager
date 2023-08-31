@@ -2,7 +2,8 @@ export class SaveContractDto {
     serviceId: number;
     clientId: number;
     workerId: number;
-    estimatedTime: Date;
+    addressId: number;
+    estimatedTime: number;
     estimatedStartHour: Date; 
     contractDate: Date;
 }

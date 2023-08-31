@@ -3,6 +3,7 @@ import { Client } from "./Client";
 import { Worker } from "./Worker";
 import { Service } from "./Service";
 import { ContractStatus } from "./ContractStatus";
+import { Address } from "./Address";
 
 
 @Entity({name: 'contracts'})
@@ -28,7 +29,7 @@ export class Contract {
     estimatedEndHour: Date;
 
     @Column({name: 'estimated_time'})
-    estimatedTime: Date;
+    estimatedTime: number;
 
     @Column({name: 'real_start_hour'})
     realStartHour: Date;
@@ -50,6 +51,10 @@ export class Contract {
     @ManyToOne(() => Service, (service) => service.id)
     @JoinColumn({name: 'service_id', referencedColumnName: 'id'})
     service: Service;
+
+    @ManyToOne(() => Address, (address) => address.id)
+    @JoinColumn({name: 'address_id', referencedColumnName: 'id'})
+    address: Address;
 
     @OneToOne(() => ContractStatus) 
     @JoinColumn({name: 'contract_status_id', referencedColumnName: 'id'})
