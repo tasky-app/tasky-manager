@@ -23,17 +23,37 @@ export class WorkerService implements IWorkerService {
         @InjectRepository(Ratings) private readonly ratingsRepository: Repository<Ratings>,
     ) {
     }
-    
-    getWorkersByService(serviceId: number): Promise<Worker[]> {
-        throw new Error('Method not implemented.');
+
+    async getWorkersByService(serviceId: number): Promise<Worker[]> {
+        this.logger.log(`[SERVICE ID:${serviceId}] inicia obtención de los profesionales por servicio`)
+        return this.workerServicesRepository.find({
+            relations: { worker: { user: true } },
+            where: { service: { id: serviceId } },
+        }).then(response => {
+            const workersList = response.map(workerService => workerService.worker);
+            const workers = workersList.reduce((unique, o) => {
+                if (!unique.some(obj => obj.user.cellphone === o.user.cellphone)) {
+                    unique.push(o);
+                }
+                return unique;
+            }, []);
+            if (workers.length === 0) {
+                const msg = `[SERVICE ID:${serviceId}] no se encontraron profesionales para el servicio`
+                this.logger.error(msg);
+                throw new WorkerException(msg, HttpStatus.NOT_FOUND);
+            }
+            this.logger.log(`[SERVICE ID:${serviceId}] finaliza obtención de los profesionales por servicio`)
+            return workers;
+        })
+
     }
-    
+
     async getTopWorkers(cellphone: string): Promise<Worker[]> {
         this.logger.log(`inicia`)
 
         return this.ratingsRepository.find({
             relations: {
-                
+
             },
         })
             .then(response => {
@@ -55,19 +75,27 @@ export class WorkerService implements IWorkerService {
             });
     }
 
-    async getWorkerServices(cellphone: string) {
+    async getWorkerServices(cellphone: string): Promise<Service[]> {
         this.logger.log(`[CEL: ${cellphone}] inicia consulta de las servicios asociados al profesional`)
-        return this.workerServicesRepository.createQueryBuilder("worker_services")
-            .leftJoinAndSelect("worker_services.worker", "worker")
-            .leftJoinAndSelect("worker_services.service", "service")
-            .leftJoinAndSelect("worker.userId", "user")
-            .where("user.cellphone = :cellphone", { cellphone: cellphone })
-            .select("service")
-            .getRawMany()
+
+        return this.workerServicesRepository.find({
+            relations: {
+                worker: true,
+                service: true,
+            },
+            where: {
+                worker: {
+                    user: {
+                        cellphone: cellphone,
+                    },
+                },
+            },
+        })
             .then(response => {
                 if (response.length > 0) {
-                    this.logger.log(`[CEL: ${cellphone}] finaliza consulta de los servicios asociados al profesional con resultado: ${JSON.stringify(response)}`)
-                    return response;
+                    const services = response.map(workerService => workerService.service);
+                    this.logger.log(`[CEL: ${cellphone}] finaliza consulta de los servicios asociados al profesional con resultado: ${JSON.stringify(services)}`)
+                    return services;
                 } else {
                     const msg = `[CEL: ${cellphone}] el profesional no tiene servicios asignados`
                     this.logger.error(msg);

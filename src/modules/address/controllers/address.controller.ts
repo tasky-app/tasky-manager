@@ -28,7 +28,7 @@ export class AddressController {
         return addresses;
     }
 
-    //TODO PENDING
+    //TODO PENDING NO ESTÁ ACTUALIZANDO LA DIRECCIÓN PRINCIPAL
     @Put('main')
     public async updateMainAddress(@Headers() headers, @Body() body: Address) {
         this.logger.log(`[CEL: ${headers.cellphone}] INICIA ACTUALIZACIÓN DE LA DIRECCIÓN DEL CLIENTE`);
@@ -37,7 +37,7 @@ export class AddressController {
         return addresses;
     }
 
-    //OK - 27/08/2023
+    //TODO PENDING ESTÁ PERMITIENDO GUARDAR VARIAS DIRECCIONES PRINCIPALES
     @Post()
     public async saveAddressInDb(@Headers() headers, @Body() body: Address) {
         this.logger.log(`[CEL: ${headers.cellphone}] INICIA REGISTRO DE LA DIRECCIÓN DEL CLIENTE`);

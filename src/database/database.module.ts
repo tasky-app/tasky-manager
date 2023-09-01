@@ -14,6 +14,7 @@ import { ContractStatus } from './entities/ContractStatus';
 import { Password } from './entities/Password';
 import { Ratings } from './entities/Ratings';
 import { TopService } from './entities/TopServices';
+import { Feedback } from './entities/Feedback';
 
 @Global()
 @Module({
@@ -32,6 +33,7 @@ import { TopService } from './entities/TopServices';
             ContractStatus,
             Password,
             Ratings,
+            Feedback,
             Service,
             TopService,
             User,

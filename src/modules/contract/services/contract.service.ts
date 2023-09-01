@@ -1,4 +1,4 @@
-import { HttpStatus, Inject, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { HttpStatus, Inject, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { IContractService } from "../interfaces/contract.interface";
 import { Contract } from "src/database/entities/Contract";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -25,6 +25,32 @@ export class ContractService implements IContractService {
         private readonly workerService: WorkerService,
         private readonly clientService: ClientService
     ) { }
+
+    async getClientContracts(clientId: number): Promise<Contract[]> {
+        this.logger.log(`[CLIENT CEL:${clientId}] inicia obtención de los contratos`)
+        return this.contractRepository.find({
+            where: { client: { user: { cellphone: clientId.toString() } } },
+            relations: {
+                client: { user: true },
+                worker: { user: true },
+                address: true,
+                contractStatus: true,
+                service: true,
+            }
+        }).then(response => {
+            this.logger.log(`[CLIENT CEL:${clientId}] finaliza obtención de los contratos con resultado -> ${JSON.stringify(response)}`)
+            if (response.length === 0) {
+                throw new NotFoundException("No se encontraron contratos para el cliente");
+            }
+            return response;
+        }).catch(err => {
+            if  (err.status === HttpStatus.NOT_FOUND) {
+                throw err;
+            }
+            this.logger.error("Ocurrió un error al obtener los contratos ", err);
+            throw new InternalServerErrorException("Error al obtener los contratos");
+        });
+    }
 
     async createContract(request: SaveContractDto): Promise<void> {
         const contract: Contract = await this.buildContract(request);
