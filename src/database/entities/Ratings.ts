@@ -10,6 +10,9 @@ export class Ratings {
     @Column({name: 'value'})
     value: number;
 
+    @Column({name: 'comment'})
+    comment: string;
+
     @Column()
     @CreateDateColumn({name: 'created_at'})
     createdAt: Date;

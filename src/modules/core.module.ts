@@ -11,6 +11,7 @@ import { ServicesModule } from '../modules/services/services.module';
 import { RatingsModule } from '../modules/ratings/ratings.module';
 import { ClientModule } from '../modules/client/client.module';
 import { ContractModule } from '../modules/contract/contract.module';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
     imports: [
@@ -24,6 +25,7 @@ import { ContractModule } from '../modules/contract/contract.module';
         UserModule,
         VerifyModule,
         WorkerModule,
+        FeedbackModule,
         DatabaseModule
     ],
     controllers: [],

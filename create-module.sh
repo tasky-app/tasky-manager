@@ -1,6 +1,6 @@
 #! /bin/sh
 
-my_var="contract"
+my_var="feedback"
 # Open source folder
 cd src/modules
 echo ------  $my_var

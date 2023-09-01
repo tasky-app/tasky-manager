@@ -22,7 +22,7 @@ export class WorkerController {
     }
 
     @Post('services')
-    async saveWorkerCategories(@Headers() headers, @Body() body) {
+    async saveWorkerServices(@Headers() headers, @Body() body) {
         this.logger.log(`[CEL:${headers.cellphone}] INICIA GUARDADO DE LOS SERVICIOS DEL PROFESIONAL`)
         await this.workerService.saveWorkerServices(headers.cellphone, body).catch(err => {
             throw new TaskyException(err.status);
@@ -31,12 +31,12 @@ export class WorkerController {
     }
 
     @Post()
-    async saveWorkerInfo(@Headers() headers, @Body() worker: Worker) {
-        this.logger.log(`[CEL:${headers.cellphone}] INICIA GUARDADO DE LOS SERVICIOS DEL PROFESIONAL`)
+    async saveAdditionalInfo(@Headers() headers, @Body() worker: Worker) {
+        this.logger.log(`[CEL:${headers.cellphone}] INICIA GUARDADO DE LA INFORMACIÓN ADICIONAL DEL PROFESIONAL`)
         await this.workerService.saveWorkerInfo(headers.cellphone, worker).catch(err => {
             throw new TaskyException(err.status);
         });
-        this.logger.log(`[CEL:${headers.cellphone}] FINALIZA GUARDADO DE LOS SERVICIOS DEL PROFESIONAL`)
+        this.logger.log(`[CEL:${headers.cellphone}] FINALIZA GUARDADO DE LA INFORMACIÓN ADICIONAL DEL PROFESIONAL`)
     }
 
     @Get()
@@ -58,6 +58,7 @@ export class WorkerController {
         this.logger.log(`[CEL:${headers.cellphone}] FINALIZA ACTUALIZACIÓN DE ESTADO DEL PROFESIONAL`)
     }
 
+    // TODO PENDING
     @Get("top")
     async getTopWorkers(@Headers() headers) {
         this.logger.log(`INICIA OBTENCIÓN DE LOS PROFESIONALES DESTACADOS`)
