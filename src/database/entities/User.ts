@@ -23,6 +23,9 @@ export class User {
     @Column()
     email: string;
 
+    @Column({name: 'profile_photo'})
+    profilePhoto: string;
+
     @Column({name: 'birth_date'})
     birthDate: Date;
 
