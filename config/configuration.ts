@@ -5,6 +5,6 @@ export default () => ({
   twilio_verify_sid: process.env.TWILIO_VERIFY_SID || "VA6b36c1961e6a5af9d29ead2d87a22b77",
   db_port: parseInt(process.env.DB_PORT) || 3306,
   db_username: process.env.DB_USERNAME || "root",
-  db_pass: process.env.DB_PASS || "",
+  db_pass: process.env.DB_PASS || "Colombia1*",
   db_name: process.env.DB_NAME || "tasky_db"
 });
