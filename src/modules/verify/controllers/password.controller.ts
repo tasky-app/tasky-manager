@@ -1,5 +1,5 @@
 import { Body, Controller, Headers, Logger, Post } from "@nestjs/common";
-import { PasswordService } from "../services/Password.service";
+import { PasswordService } from "../services/password.service";
 
 @Controller("password")
 export class PasswordController {
