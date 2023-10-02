@@ -1,0 +1,67 @@
+
+9
+	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
+A
+package-lock.json,f/a/fa288d1472d29beccb489a676f68739ad365fc47
+F
+config/env/develop.env,1/c/1c577f6188305a4f8ae6f634f9248e19b1829ba6
+G
+config/configuration.ts,6/6/66c30be78c43ea67c8806c61d9d73a1cc9bbe49a
+L
+src/users/enums/user_type.ts,2/b/2b13688350835fe2ae9063215b4560e79e703980
+O
+src/database/entities/Client.ts,5/5/557711a0a816f639378fa0c49185c9d5efaa9fbf
+S
+#src/exceptions/address_exception.ts,6/4/6420b5381e3033314a40d0aaf1bae75d06d923ab
+;
+src/main.ts,1/a/1af9a5bdf96ddff3a2f3427ed520b7005e9564ad
+Q
+!src/database/entities/Category.ts,3/c/3c6701a986ab43b98d38a00d2e05ed6401d1e8ae
+[
++src/verify/controllers/verify.controller.ts,8/a/8a82e8b4b2af81442b0c5dab1ae5a2092b1199a8
+U
+%src/verify/services/verify.service.ts,d/8/d810be92a08c913f8cf218906992ac0d27b6f61f
+B
+src/core.module.ts,2/4/24306643c9fd088cf60dbdc6b4ab86f34e4e83c4
+R
+"src/exceptions/worker_exception.ts,a/6/a6b460dbca8bf356d65ddbe03c3cc0af8fddb60c
+W
+'src/database/entities/WorkerServices.ts,8/5/8529dc38bd99506fef63ded0ce6c32fd789bbb2f
+K
+src/worker/worker.module.ts,4/a/4a39386606d2f0c5c60ac78effb5900a08f4711c
+O
+src/database/entities/Worker.ts,7/3/7301bb8e5439974729c5965fe195c648cdbe4be3
+U
+%src/database/entities/WorkerStatus.ts,e/2/e225f583f6265016109cba5d4acb0ff1c94f04b2
+P
+ src/database/entities/Service.ts,b/c/bccc209955ee3aa616c2d642a5caac6932973261
+V
+&src/exceptions/categories_exception.ts,9/b/9b98d6585f36eb73c4bda6386386a41653e4d60b
+V
+&src/worker/enums/worker_status_enum.ts,3/4/34a403922e6c29066e3c89275345f21daf4c3454
+P
+ src/exceptions/user_exception.ts,7/c/7caee5ce9577e7d36fc57be8cbc79ac8450be20e
+Q
+!src/exceptions/tasky_exception.ts,c/1/c144bb899dedb9309a6be9b00888e4f083e2fd17
+[
++src/worker/controllers/worker.controller.ts,6/b/6b26aa3483257f8817e17db96ad244bc7a955b52
+S
+#src/categories/categories.module.ts,1/d/1d937244d6b23813831bed452235ad14b3cc9574
+a
+1src/categories/controllers/category.controller.ts,1/6/16dfb795f5bd4b75ceeb9a74a55380e11519c7cb
+U
+%src/worker/services/worker.service.ts,a/b/abab347d1abd08d215d0e9dac85fe5744f7cc8eb
+Z
+*test/controllers/verify.controller.spec.ts,1/0/10bd6499a8e9782dd8e75f0c930ba988cdc1e1ee
+[
++src/categories/services/category.service.ts,9/2/926f418e0b037581cbc3c80fa12f63749be810cf
+O
+src/database/database.module.ts,d/6/d66decb9666bd173746e688b65f62e8cdbc93dff
+<
+package.json,7/0/7030d0b2f71b999ff89a343de08c414af32fc93a
+D
+test/app.e2e-spec.ts,a/7/a74edfbf319672dfb0ebaef495d5ff498e281b6f
+B
+test/jest-e2e.json,2/2/22c686c93a7d563a763e70728fd9fb4eb1d86e20
+d
+4test/address/controllers/address.controllers.spec.ts,2/6/263e5fd3f7c0ae7ad33946059a0792fbdf5bd45d
