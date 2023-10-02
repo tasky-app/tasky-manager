@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { VerifyController } from "./controllers/verify.controller";
 import { VerifyService } from "./services/verify.service";
 import { PasswordController } from "./controllers/password.controller";
-import { PasswordService } from "./services/Password.service";
+import { PasswordService } from "./services/password.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Password } from "src/database/entities/Password";
 import { User } from "src/database/entities/User";
