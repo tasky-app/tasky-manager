@@ -1,6 +1,7 @@
-import {Body, Controller, Delete, Get, Headers, Logger, Post, Put} from "@nestjs/common";
-import {AddressService} from '../services/address.service';
+import { Body, Controller, Delete, Get, Headers, Logger, Post, Put } from "@nestjs/common";
+import { AddressService } from '../services/address.service';
 import { Address } from "src/database/entities/Address";
+import { AddressException } from "src/exceptions/address_exception";
 
 @Controller("address")
 export class AddressController {
@@ -14,27 +15,37 @@ export class AddressController {
     @Get()
     public async getAddresses(@Headers() headers) {
         this.logger.log(`[CEL: ${headers.cellphone}] INICIA OBTENCIÓN DE LAS DIRECCIONES DEL CLIENTE`);
-        const addresses = await this.addressService.getAddress(headers.cellphone);
-        this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA OBTENCIÓN DE LAS DIRECCIONES DEL CLIENTE`);
-        return addresses;
+        return this.addressService.getAddress(headers.cellphone).then((addresses) => {
+            this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA OBTENCIÓN DE LAS DIRECCIONES DEL CLIENTE`);
+            return addresses;
+        }).catch((err) => {
+            throw new AddressException(err.message, err.status)
+        });
+
     }
 
     //OK - 27/08/2023
     @Get('main')
     public async getMainAddress(@Headers() headers) {
-        this.logger.log(`[CEL: ${headers.cellphone}] INICIA OBTENCIÓN DE LAS DIRECCIONES DEL CLIENTE`);
-        const addresses = await this.addressService.getMainAddress(headers.cellphone);
-        this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA OBTENCIÓN DE LAS DIRECCIONES DEL CLIENTE`);
-        return addresses;
+        this.logger.log(`[CEL: ${headers.cellphone}] INICIA OBTENCIÓN DE LA DIRECCIÓN PRINCIPAL DEL CLIENTE`);
+        return this.addressService.getMainAddress(headers.cellphone).then((mainAddress) => {
+            this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA OBTENCIÓN DE LA DIRECCIÓN PRINCIPAL DEL CLIENTE`);
+            return mainAddress;
+        }).catch((err) => {
+            throw new AddressException(err.message, err.status)
+        });
     }
 
     //TODO PENDING NO ESTÁ ACTUALIZANDO LA DIRECCIÓN PRINCIPAL
     @Put('main')
     public async updateMainAddress(@Headers() headers, @Body() body: Address) {
         this.logger.log(`[CEL: ${headers.cellphone}] INICIA ACTUALIZACIÓN DE LA DIRECCIÓN DEL CLIENTE`);
-        const addresses = await this.addressService.updateMainAddress(headers.cellphone, body);
-        this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA ACTUALIZACIÓN DE LA DIRECCIÓN DEL CLIENTE`);
-        return addresses;
+        return this.addressService.updateMainAddress(headers.cellphone, body).then((mainAdress) => {
+            this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA ACTUALIZACIÓN DE LA DIRECCIÓN DEL CLIENTE`);
+            return mainAdress;
+        }).catch((err) => {
+            throw new AddressException(err.message, err.status)
+        });
     }
 
     //TODO PENDING ESTÁ PERMITIENDO GUARDAR VARIAS DIRECCIONES PRINCIPALES
@@ -50,8 +61,12 @@ export class AddressController {
     @Delete()
     public async deleteAddressFromDb(@Headers() headers, @Body() body) {
         this.logger.log(`[CEL: ${headers.cellphone}] INICIA ELIMINACIÓN DE LA DIRECCIÓN DEL CLIENTE`);
-        await this.addressService.deleteAddress(headers.cellphone, body);
-        this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA ELIMINACIÓN DE LA DIRECCIÓN DEL CLIENTE`);
+        return this.addressService.deleteAddress(headers.cellphone, body).then((mainAdress) => {
+            this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA ELIMINACIÓN DE LA DIRECCIÓN DEL CLIENTE`);
+            return mainAdress;
+        }).catch((err) => {
+            throw new AddressException(err.message, err.status)
+        });
     }
 
 }
