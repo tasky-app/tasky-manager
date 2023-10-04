@@ -22,34 +22,41 @@ export class UserService implements IUserService {
 
     async saveWorker(user: User, category: Category): Promise<void> {
         this.logger.log(`inicia almacenamiento del profesional en base de datos con info usuario: ${JSON.stringify(user)} con categoria: ${JSON.stringify(category)}`);
-        const userInfo = await this.userRepository.save(user);
-        const worker = new Worker();
-        worker.user = userInfo;
-        worker.category = category;
-        return this.workerRepository.save(worker).then(() => {
-            this.logger.log('finaliza almacenamiento del profesional en base de datos');
-        }).catch(err => {
-            this.logger.error(err.message);
-            throw err;
-        });
+        return this.userRepository.save(user)
+            .then((userInfo: User) => {
+                const worker = new Worker();
+                worker.user = userInfo;
+                worker.category = category;
+                return this.workerRepository.save(worker).then(() => {
+                    this.logger.log('finaliza almacenamiento del profesional en base de datos');
+                }).catch(err => {
+                    this.logger.error(err.message);
+                    throw new UserException("Ocurrió un error al guardar información de profesional", 500);
+                });
+            })
+            .catch(err => {
+                this.logger.error(err.message);
+                throw new UserException("Ocurrió un error al guardar información en tabla de usuarios", 500);
+            });
     }
 
     async saveClient(user: User): Promise<void> {
-        try {
-            this.logger.log(`inicia almacenamiento del cliente en base de datos con info ${JSON.stringify(user)}`);
-            const userInfo = await this.userRepository.save(user);
-            const client = new Client();
-            client.user = userInfo;
-            return this.clientRepository.save(client).then(() => {
-                this.logger.log('finaliza almacenamiento del cliente en base de datos');
-            }).catch(err => {
+        this.logger.log(`inicia almacenamiento del cliente en base de datos con info ${JSON.stringify(user)}`);
+        return this.userRepository.save(user)
+            .then((userInfo: User) => {
+                const client = new Client();
+                client.user = userInfo;
+                return this.clientRepository.save(client).then(() => {
+                    this.logger.log('finaliza almacenamiento del cliente en base de datos');
+                }).catch(err => {
+                    this.logger.error(err.message);
+                    throw new UserException("Ocurrió un error al guardar información de cliente", 500);
+                });
+            })
+            .catch(err => {
                 this.logger.error(err.message);
-                throw err;
+                throw new UserException("Ocurrió un error al guardar información en tabla de usuarios", 500);
             });
-        } catch (err) {
-            this.logger.error(err.message)
-            throw err;
-        }
     }
 
     async getUserInfo(cellphone: string): Promise<User> {
@@ -67,7 +74,7 @@ export class UserService implements IUserService {
             }
         }).catch(err => {
             this.logger.error(err.message);
-            throw new UserException(err.message, err.status);
+            throw new UserException("Ocurrió un error al obtener info del usuario", 500);
         });
     }
 
@@ -86,19 +93,24 @@ export class UserService implements IUserService {
             }
         }).catch(err => {
             this.logger.error(err.message);
-            throw new UserException(err.message, err.status);
+            throw new UserException("Ocurrió un error al obtener info del usuario por número de celular", 500);
         });
     }
 
     async checkUserExists(cellphone: string): Promise<boolean> {
         this.logger.log(`[CEL:${cellphone}] inicia consulta del usuario en base de datos`);
 
-        const userExists = await this.userRepository.exist({
+        return this.userRepository.exist({
             where: {
                 cellphone: cellphone,
             },
+        }).then((userExists) => {
+            this.logger.log(`[CEL:${cellphone}] finaliza consulta del usuario en base de datos con resultado: ${userExists}`);
+            return userExists;
+        }).catch(err => {
+            this.logger.error(err.message);
+            throw new UserException("Ocurrió un error al consultar la existencia del usuario", 500);
         });
-        this.logger.log(`[CEL:${cellphone}] finaliza consulta del usuario en base de datos con resultado: ${userExists}`);
-        return userExists;
+        
     }
 }
