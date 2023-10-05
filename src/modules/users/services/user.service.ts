@@ -31,12 +31,12 @@ export class UserService implements IUserService {
                     this.logger.log('finaliza almacenamiento del profesional en base de datos');
                 }).catch(err => {
                     this.logger.error(err.message);
-                    throw new TaskyException("Ocurrió un error al guardar información de profesional", 500);
+                    throw new TaskyException(500, "Ocurrió un error al guardar información de profesional");
                 });
             })
             .catch(err => {
                 this.logger.error(err.message);
-                throw new TaskyException("Ocurrió un error al guardar información en tabla de usuarios", 500);
+                throw new TaskyException(500, "Ocurrió un error al guardar información en tabla de usuarios");
             });
     }
 
@@ -50,12 +50,12 @@ export class UserService implements IUserService {
                     this.logger.log('finaliza almacenamiento del cliente en base de datos');
                 }).catch(err => {
                     this.logger.error(err.message);
-                    throw new TaskyException("Ocurrió un error al guardar información de cliente", 500);
+                    throw new TaskyException(500, "Ocurrió un error al guardar información de cliente");
                 });
             })
             .catch(err => {
                 this.logger.error(err.message);
-                throw new TaskyException("Ocurrió un error al guardar información en tabla de usuarios", 500);
+                throw new TaskyException(500, "Ocurrió un error al guardar información en tabla de usuarios");
             });
     }
 
@@ -70,11 +70,11 @@ export class UserService implements IUserService {
                 this.logger.log(`[CEL:${cellphone}] finaliza obtención de la info del usuario con resultado: ${JSON.stringify(userInfo)}`);
                 return userInfo;
             } else {
-                throw new TaskyException("El usuario no existe en base de datos", HttpStatus.NOT_FOUND);
+                throw new TaskyException(HttpStatus.NOT_FOUND, "El usuario no existe en base de datos");
             }
         }).catch(err => {
             this.logger.error(err.message);
-            throw new TaskyException("Ocurrió un error al obtener info del usuario", 500);
+            throw new TaskyException(500, "Ocurrió un error al obtener info del usuario");
         });
     }
 
@@ -89,11 +89,11 @@ export class UserService implements IUserService {
                 this.logger.log(`[CEL:${cellphone}] finaliza obtención de la info del usuario por número de celular con resultado: ${JSON.stringify(userInfo)}`);
                 return userInfo;
             } else {
-                throw new TaskyException("El usuario no existe en base de datos", HttpStatus.NOT_FOUND);
+                throw new TaskyException(HttpStatus.NOT_FOUND, "El usuario no existe en base de datos");
             }
         }).catch(err => {
             this.logger.error(err.message);
-            throw new TaskyException("Ocurrió un error al obtener info del usuario por número de celular", 500);
+            throw new TaskyException(500, "Ocurrió un error al obtener info del usuario por número de celular");
         });
     }
 
@@ -109,7 +109,7 @@ export class UserService implements IUserService {
             return userExists;
         }).catch(err => {
             this.logger.error(err.message);
-            throw new TaskyException("Ocurrió un error al consultar la existencia del usuario", 500);
+            throw new TaskyException(500, "Ocurrió un error al consultar la existencia del usuario");
         });
         
     }
