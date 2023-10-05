@@ -1,8 +1,8 @@
-import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Address } from '../../../database/entities/Address';
-import { AddressException } from '../../../exceptions/address_exception';
+import { TaskyException } from '../../../exceptions/tasky_exception';
 import { UserService } from '../../users/services/user.service';
 import { IAddressService } from '../interfaces/address.interface';
 
@@ -24,7 +24,7 @@ export class AddressService implements IAddressService {
             return address;
         }).catch(err => {
             this.logger.error(`[ID: ${addressId}] ocurrió un error al consultar la dirección por id: ${JSON.stringify(err)}`);
-            throw new AddressException("Ocurrió un error al consultar la dirección", HttpStatus.INTERNAL_SERVER_ERROR)
+            throw new TaskyException(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error al consultar la dirección")
         });
     }
 
@@ -51,7 +51,7 @@ export class AddressService implements IAddressService {
                 this.logger.log(`[CEL: ${cellphone}] finaliza consulta de las direcciones del cliente con resultado: ${JSON.stringify(addresses)}`);
                 return addresses;
             } else {
-                throw new AddressException(`No hay direcciones registradas para el cliente`, HttpStatus.NOT_FOUND);
+                throw new TaskyException(HttpStatus.NOT_FOUND, "No hay direcciones registradas para el cliente");
             }
         })
     }
@@ -80,7 +80,7 @@ export class AddressService implements IAddressService {
                 this.logger.log(`[CEL: ${cellphone}] finaliza consulta de la dirección principal del cliente: ${JSON.stringify(addresses[0])}`);
                 return addresses[0];
             } else {
-                throw new AddressException(`No hay direcciones principal para el cliente`, HttpStatus.NOT_FOUND);
+                throw new TaskyException(HttpStatus.NOT_FOUND, "No hay direcciones principal para el cliente");
             }
         });
     }
@@ -100,7 +100,7 @@ export class AddressService implements IAddressService {
             return addressResponse;
         }).catch(err => {
             this.logger.error(`[CEL: ${cellphone}] Ocurrió un error al guardar la dirección error: ${JSON.stringify(err)}`);
-            throw new AddressException("Ocurrió un error al guardar la dirección", HttpStatus.INTERNAL_SERVER_ERROR)
+            throw new TaskyException(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error al guardar la dirección")
         });
     }
 
@@ -120,7 +120,7 @@ export class AddressService implements IAddressService {
                 this.logger.log(`[CEL: ${cellphone}] finaliza proceso de eliminación de la dirección ${address.address}`);
             }).catch(err => {
                 this.logger.log(`[CEL: ${cellphone}] ocurrió un error al eliminar la dirección ${JSON.stringify(err)}`);
-                throw new AddressException("Ocurrió un error al eliminar la dirección", HttpStatus.INTERNAL_SERVER_ERROR)
+                throw new TaskyException(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error al eliminar la dirección")
             })
     }
 
@@ -134,7 +134,7 @@ export class AddressService implements IAddressService {
                 this.logger.log(`[CEL: ${cellphone}] finaliza proceso de actualización de la dirección en base de datos a estado -> ${isMainAddress}`);
             }).catch(err => {
                 this.logger.error(`[CEL: ${cellphone}] Ocurrió un error al actualizar la dirección - error: ${JSON.stringify(err)}`);
-                throw new AddressException("Ocurrió un error al actualizar la dirección", HttpStatus.INTERNAL_SERVER_ERROR)
+                throw new TaskyException(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error al actualizar la dirección")
             });
     }
 

@@ -12,7 +12,7 @@ L
 O
 src/database/entities/Client.ts,5/5/557711a0a816f639378fa0c49185c9d5efaa9fbf
 S
-#src/exceptions/address_exception.ts,6/4/6420b5381e3033314a40d0aaf1bae75d06d923ab
+#src/exceptions/tasky_exception.ts,6/4/6420b5381e3033314a40d0aaf1bae75d06d923ab
 ;
 src/main.ts,1/a/1af9a5bdf96ddff3a2f3427ed520b7005e9564ad
 Q
@@ -40,7 +40,7 @@ V
 V
 &src/worker/enums/worker_status_enum.ts,3/4/34a403922e6c29066e3c89275345f21daf4c3454
 P
- src/exceptions/user_exception.ts,7/c/7caee5ce9577e7d36fc57be8cbc79ac8450be20e
+ src/exceptions/tasky_exception.ts,7/c/7caee5ce9577e7d36fc57be8cbc79ac8450be20e
 Q
 !src/exceptions/tasky_exception.ts,c/1/c144bb899dedb9309a6be9b00888e4f083e2fd17
 [

@@ -12,6 +12,9 @@ export class TopService {
     @JoinColumn({name: 'service_id', referencedColumnName: 'id'})
     service: Service;
 
+    @Column({name: 'price_from'})
+    priceFrom: number;
+
     @Column()
     @CreateDateColumn({name: 'created_at'})
     createdAt: Date;
