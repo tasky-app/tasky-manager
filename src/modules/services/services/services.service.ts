@@ -16,7 +16,7 @@ export class ServicesService implements IServicesService{
     ) {
     }
 
-    getServiceById(serviceId: number): Promise<Service> {
+    public getServiceById(serviceId: number): Promise<Service> {
         this.logger.log(`[SERVICE ID: ${serviceId}] inicia obtención de la información del servicio`)
         return this.serviceRepository.findOneBy({id: serviceId})
             .then(response => {
@@ -29,11 +29,11 @@ export class ServicesService implements IServicesService{
             });
     }
 
-    getAllServices(): Promise<Service[]> {
+    public async getAllServices(): Promise<Service[]> {
         return this.serviceRepository.find();
     }
 
-    getTopServices(): Promise<TopService[]> {
+    public async getTopServices(): Promise<TopService[]> {
         return this.topServiceRepository.find({ relations: { service: true }})
     }
 }

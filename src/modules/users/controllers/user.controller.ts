@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Headers, Logger, Post, Put } from "@nestjs/common";
 import { UserService } from '../services/user.service';
 import { User } from "src/database/entities/User";
-import { UserException } from "src/exceptions/user_exception";
+import { TaskyException } from "src/exceptions/tasky_exception";
 
 @Controller("user")
 export class UserController {
@@ -20,7 +20,7 @@ export class UserController {
                 this.logger.log(`[CC: ${user.cellphone}] FINALIZA CREACIÓN DE CLIENTE EN BASE DE DATOS`);
             })
             .catch(err => {
-                throw new UserException(err.message, err.status);
+                throw new TaskyException(err.message, err.status);
             });
     }
 
@@ -37,7 +37,7 @@ export class UserController {
 
             })
             .catch(err => {
-                throw new UserException(err.message, err.status);
+                throw new TaskyException(err.message, err.status);
             });
     }
 
@@ -51,7 +51,7 @@ export class UserController {
                 return user;
             })
             .catch(err => {
-                throw new UserException(err.message, err.status);
+                throw new TaskyException(err.message, err.status);
             });
     }
 
@@ -65,7 +65,7 @@ export class UserController {
                 return user;
             })
             .catch(err => {
-                throw new UserException(err.message, err.status);
+                throw new TaskyException(err.message, err.status);
             });
     }
 

@@ -2,7 +2,7 @@ import {HttpException} from '@nestjs/common';
 
 export class TaskyException extends HttpException {
 
-    constructor(statusCode: number) {
-        super("Ha ocurrido un error", statusCode);
+    constructor(statusCode: number, message: string = "Ha ocurrido un error") {
+        super(message, statusCode);
     }
 }

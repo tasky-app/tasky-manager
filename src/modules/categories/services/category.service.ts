@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from 'src/database/entities/Category';
 import { Service } from 'src/database/entities/Service';
-import { CategoriesException } from 'src/exceptions/categories_exception';
+import { TaskyException } from 'src/exceptions/tasky_exception';
 
 @Injectable()
 export class CategoryService {
@@ -24,13 +24,13 @@ export class CategoryService {
                     this.logger.log(`finaliza consulta de las categorías con resultado: ${JSON.stringify(categories)}`);
                     return categories;
                 }
-                throw new CategoriesException("No existen categorías en base de datos", HttpStatus.NOT_FOUND);
+                throw new TaskyException(HttpStatus.NOT_FOUND, "No existen categorías en base de datos");
             })
             .catch((err) => {
                 if (err.status == 404) {
                     throw err;
                 }
-                throw new CategoriesException("Ocurrió un error al consultar las categorías", HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new TaskyException(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error al consultar las categorías");
             });
     }
 
@@ -56,10 +56,10 @@ export class CategoryService {
                 this.logger.log(`finaliza consulta de los servicios por categoria con resultado: ${JSON.stringify(response)}`);
                 return response;
             } else {
-                throw new CategoriesException("No se encontraron servicios para esta categoria", HttpStatus.NOT_FOUND);
+                throw new TaskyException(HttpStatus.NOT_FOUND, "No se encontraron servicios para esta categoria");
             }
         }).catch(() => {
-            throw new CategoriesException("Ocurrió un error al consultar los servicios", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new TaskyException(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error al consultar los servicios");
         })
     }
 }

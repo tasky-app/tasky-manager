@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Headers, Logger, Post, Put } from "@nestjs/common";
 import { AddressService } from '../services/address.service';
 import { Address } from "src/database/entities/Address";
-import { AddressException } from "src/exceptions/address_exception";
+import { TaskyException } from "src/exceptions/tasky_exception";
 
 @Controller("address")
 export class AddressController {
@@ -19,7 +19,7 @@ export class AddressController {
             this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA OBTENCIÓN DE LAS DIRECCIONES DEL CLIENTE`);
             return addresses;
         }).catch((err) => {
-            throw new AddressException(err.message, err.status)
+            throw new TaskyException(err.message, err.status)
         });
 
     }
@@ -32,7 +32,7 @@ export class AddressController {
             this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA OBTENCIÓN DE LA DIRECCIÓN PRINCIPAL DEL CLIENTE`);
             return mainAddress;
         }).catch((err) => {
-            throw new AddressException(err.message, err.status)
+            throw new TaskyException(err.message, err.status)
         });
     }
 
@@ -44,7 +44,7 @@ export class AddressController {
             this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA ACTUALIZACIÓN DE LA DIRECCIÓN DEL CLIENTE`);
             return mainAdress;
         }).catch((err) => {
-            throw new AddressException(err.message, err.status)
+            throw new TaskyException(err.message, err.status)
         });
     }
 
@@ -65,7 +65,7 @@ export class AddressController {
             this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA ELIMINACIÓN DE LA DIRECCIÓN DEL CLIENTE`);
             return mainAdress;
         }).catch((err) => {
-            throw new AddressException(err.message, err.status)
+            throw new TaskyException(err.message, err.status)
         });
     }
 

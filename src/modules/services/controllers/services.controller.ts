@@ -1,7 +1,8 @@
-import {Controller, Get, Headers, Logger} from "@nestjs/common";
-import {ServicesService} from '../services/services.service';
+import { Controller, Get, Logger } from "@nestjs/common";
+import { ServicesService } from '../services/services.service';
 import { TopService } from "src/database/entities/TopServices";
 import { Service } from "src/database/entities/Service";
+import { TaskyException } from "src/exceptions/tasky_exception";
 
 @Controller("services")
 export class ServicesController {
@@ -15,17 +16,23 @@ export class ServicesController {
     @Get("/top")
     public async getTopServices(): Promise<TopService[]> {
         this.logger.log(`INICIA OBTENCIÓN DE LOS SERVICIOS DESTACADOS`);
-        const topServices = this.servicesService.getTopServices();
-        this.logger.log(`FINALIZA OBTENCIÓN DE LOS SERVICIOS DESTACADOS CON RESULTADO -> ${JSON.stringify(topServices)}`);
-        return topServices;
+        return this.servicesService.getTopServices().then((topServices) => {
+            this.logger.log(`FINALIZA OBTENCIÓN DE LOS SERVICIOS DESTACADOS CON RESULTADO -> ${JSON.stringify(topServices)}`);
+            return topServices;
+        }).catch(() => {
+            throw new TaskyException(500, "Ocurrió un error al obtener los servicios destacados");
+        });
     }
 
     //OK - 27/08/2023
     @Get()
     public async getAllServices(): Promise<Service[]> {
         this.logger.log(`INICIA OBTENCIÓN DE TODOS LOS SERVICIOS`);
-        const services = this.servicesService.getAllServices();
-        this.logger.log(`FINALIZA OBTENCIÓN DE TODOS LOS SERVICIOS CON RESULTADO -> ${JSON.stringify(services)}`);
-        return services;
+        return this.servicesService.getAllServices().then((services) => {
+            this.logger.log(`FINALIZA OBTENCIÓN DE TODOS LOS SERVICIOS CON RESULTADO -> ${JSON.stringify(services)}`);
+            return services;
+        }).catch(() => {
+            throw new TaskyException(500, "Ocurrió un error al obtener todos los servicios");
+        });
     }
 }
