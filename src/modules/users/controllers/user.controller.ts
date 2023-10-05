@@ -14,6 +14,7 @@ export class UserController {
     //OK - 27/08/2023
     @Post("client")
     public async createClientInDb(@Body() user: User): Promise<void> {
+        this.logger.log(`[CC:  -> ${user}] INICIA CREACIÓN DE CLIENTE EN BASE DE DATOSxxx`);
         this.logger.log(`[CC: ${user.cellphone}] INICIA CREACIÓN DE CLIENTE EN BASE DE DATOS`);
         await this.userService.saveClient(user)
             .then(() => {
