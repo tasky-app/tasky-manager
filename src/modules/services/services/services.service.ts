@@ -30,10 +30,10 @@ export class ServicesService implements IServicesService {
     }
 
     public async getAllServices(): Promise<Service[]> {
-        return this.serviceRepository.find();
+        return this.serviceRepository.find({ relations: { category: true } });
     }
 
     public async getTopServices(): Promise<TopService[]> {
-        return this.topServiceRepository.find({ relations: { service: { category: true } } })
+        return this.topServiceRepository.find({ relations: { service: { category: true } } });
     }
 }
