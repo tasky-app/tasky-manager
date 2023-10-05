@@ -5,7 +5,7 @@ import { Service } from "src/database/entities/Service";
 import { Worker } from "src/database/entities/Worker";
 import { WorkerServices } from "src/database/entities/WorkerServices";
 import { WorkerStatus } from "src/database/entities/WorkerStatus";
-import { TaskyException } from "src/exceptions/worker_exception";
+import { TaskyException } from "src/exceptions/tasky_exception";
 import { Repository } from "typeorm";
 import { EWorkerStatus } from "../enums/worker_status_enum";
 import { IWorkerService } from "../interfaces/worker.interface";
@@ -40,7 +40,7 @@ export class WorkerService implements IWorkerService {
             if (workers.length === 0) {
                 const msg = `[SERVICE ID:${serviceId}] no se encontraron profesionales para el servicio`
                 this.logger.error(msg);
-                throw new TaskyException(msg, HttpStatus.NOT_FOUND);
+                throw new TaskyException(HttpStatus.NOT_FOUND, msg);
             }
             this.logger.log(`[SERVICE ID:${serviceId}] finaliza obtención de los profesionales por servicio`)
             return workers;
@@ -99,7 +99,7 @@ export class WorkerService implements IWorkerService {
                 } else {
                     const msg = `[CEL: ${cellphone}] el profesional no tiene servicios asignados`
                     this.logger.error(msg);
-                    throw new TaskyException(msg, HttpStatus.NOT_ACCEPTABLE);
+                    throw new TaskyException(HttpStatus.NOT_ACCEPTABLE, msg);
                 }
             })
             .catch(err => {
@@ -122,7 +122,7 @@ export class WorkerService implements IWorkerService {
                 .catch(err => {
                     const msg = `[CEL: ${cellphone} Ocurrió un error al guardar del servicio del profesional - Services: ${JSON.stringify(service)}]`
                     this.logger.error(msg, err);
-                    throw new TaskyException(msg, HttpStatus.INTERNAL_SERVER_ERROR)
+                    throw new TaskyException(HttpStatus.INTERNAL_SERVER_ERROR, msg)
                 });
         }
     }
@@ -144,7 +144,7 @@ export class WorkerService implements IWorkerService {
         }).catch(err => {
             const msg = `[CEL: ${cellphone}] ocurrió un error al obtener la información del profesional ${JSON.stringify(err)}`
             this.logger.error(msg, err)
-            throw new TaskyException(msg, HttpStatus.INTERNAL_SERVER_ERROR)
+            throw new TaskyException(HttpStatus.INTERNAL_SERVER_ERROR, msg)
         });
     }
 
@@ -170,7 +170,7 @@ export class WorkerService implements IWorkerService {
             .catch(err => {
                 const msg = `[CEL: ${worker.user.cellphone}] ocurrió un error al guardar la información del profesional ${JSON.stringify(err)}`
                 this.logger.error(msg, err)
-                throw new TaskyException(msg, HttpStatus.INTERNAL_SERVER_ERROR)
+                throw new TaskyException(HttpStatus.INTERNAL_SERVER_ERROR, msg)
             });
     }
 
@@ -181,12 +181,12 @@ export class WorkerService implements IWorkerService {
             },
         }).then(res => {
             if (res === null) {
-                throw new TaskyException(`Ocurrió un error al obtener el estado`, HttpStatus.INTERNAL_SERVER_ERROR)
+                throw new TaskyException(HttpStatus.INTERNAL_SERVER_ERROR, `Ocurrió un error al obtener el estado`)
             }
             return res;
         }).catch(err => {
             this.logger.error(err.message, err)
-            throw new TaskyException(err.message, HttpStatus.INTERNAL_SERVER_ERROR)
+            throw new TaskyException(HttpStatus.INTERNAL_SERVER_ERROR, err.message)
         })
     }
 

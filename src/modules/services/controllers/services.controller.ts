@@ -31,7 +31,8 @@ export class ServicesController {
         return this.servicesService.getAllServices().then((services) => {
             this.logger.log(`FINALIZA OBTENCIÓN DE TODOS LOS SERVICIOS CON RESULTADO -> ${JSON.stringify(services)}`);
             return services;
-        }).catch(() => {
+        }).catch((err) => {
+            this.logger.error("Error al obtener todos los servicios -> ", err);
             throw new TaskyException(500, "Ocurrió un error al obtener todos los servicios");
         });
     }

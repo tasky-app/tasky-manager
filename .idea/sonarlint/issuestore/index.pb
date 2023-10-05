@@ -24,7 +24,7 @@ U
 B
 src/core.module.ts,2/4/24306643c9fd088cf60dbdc6b4ab86f34e4e83c4
 R
-"src/exceptions/worker_exception.ts,a/6/a6b460dbca8bf356d65ddbe03c3cc0af8fddb60c
+"src/exceptions/tasky_exception.ts,a/6/a6b460dbca8bf356d65ddbe03c3cc0af8fddb60c
 W
 'src/database/entities/WorkerServices.ts,8/5/8529dc38bd99506fef63ded0ce6c32fd789bbb2f
 K

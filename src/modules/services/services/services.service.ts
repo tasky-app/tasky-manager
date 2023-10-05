@@ -23,8 +23,8 @@ export class ServicesService implements IServicesService{
                 this.logger.log(`[SERVICE ID: ${serviceId}] finaliza obtención de la información del servicio con resultado -> ${JSON.stringify(response)}`)
                 return response;
             })
-            .catch(() => {
-                this.logger.error("Ocurrió un error al obtener la información del servicio por id")
+            .catch((err) => {
+                this.logger.error("Ocurrió un error al obtener la información del servicio por id, error -> ", err)
                 throw new InternalServerErrorException("Error al obtener información de servicio")
             });
     }
