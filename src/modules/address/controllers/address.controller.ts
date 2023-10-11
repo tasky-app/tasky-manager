@@ -11,6 +11,7 @@ export class AddressController {
     constructor(private readonly addressService: AddressService) {
     }
 
+    //HAY UN BUG, PERMITE OBTENER TODAS LAS DIRECCIONES ASÍ VENGA CON HEADER VACIO
     //OK - 27/08/2023
     @Get()
     public async getAddresses(@Headers() headers) {

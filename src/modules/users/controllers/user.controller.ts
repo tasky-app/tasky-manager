@@ -45,10 +45,10 @@ export class UserController {
     //OK - 27/08/2023
     @Get()
     public async userInfo(@Headers() headers) {
-        this.logger.log(`[CC: ${headers.document_number}] INICIA OBTENCIÓN DE LA INFORMACIÓN DEL USUARIO`);
+        this.logger.log(`[CC: ${headers.cellphone}] INICIA OBTENCIÓN DE LA INFORMACIÓN DEL USUARIO`);
         return this.userService.getUserInfo(headers.cellphone)
             .then((user) => {
-                this.logger.log(`[CC: ${headers.document_number}] FINALIZA OBTENCIÓN DE LA INFORMACIÓN DEL USUARIO`);
+                this.logger.log(`[CC: ${headers.cellphone}] FINALIZA OBTENCIÓN DE LA INFORMACIÓN DEL USUARIO`);
                 return user;
             })
             .catch(err => {

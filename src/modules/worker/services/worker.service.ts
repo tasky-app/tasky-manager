@@ -40,7 +40,7 @@ export class WorkerService implements IWorkerService {
             if (workers.length === 0) {
                 const msg = `[SERVICE ID:${serviceId}] no se encontraron profesionales para el servicio`
                 this.logger.error(msg);
-                throw new TaskyException(HttpStatus.NOT_FOUND, msg);
+                throw new TaskyException(HttpStatus.NO_CONTENT, msg);
             }
             this.logger.log(`[SERVICE ID:${serviceId}] finaliza obtención de los profesionales por servicio`)
             return workers;
