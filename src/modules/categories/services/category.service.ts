@@ -58,8 +58,8 @@ export class CategoryService {
             } else {
                 throw new TaskyException(HttpStatus.NOT_FOUND, "No se encontraron servicios para esta categoria");
             }
-        }).catch(() => {
-            throw new TaskyException(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error al consultar los servicios");
+        }).catch((err) => {
+            throw new TaskyException(HttpStatus.INTERNAL_SERVER_ERROR, `Ocurrió un error al consultar los servicios -> ${err}`);
         })
     }
 }

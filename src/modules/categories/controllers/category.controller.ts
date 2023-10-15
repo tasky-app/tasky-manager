@@ -1,5 +1,5 @@
-import {Controller, Get, Headers, Logger} from "@nestjs/common";
-import {CategoryService} from '../services/category.service';
+import { Controller, Get, Headers, Logger } from "@nestjs/common";
+import { CategoryService } from '../services/category.service';
 
 @Controller("category")
 export class CategoryController {
@@ -22,8 +22,13 @@ export class CategoryController {
     @Get("services")
     public async getServicesByCategory(@Headers() headers) {
         this.logger.log(`INICIA OBTENCIÓN DE LOS SERVICIOS DE LA CATEGORÍA CON ID ${headers.category_id}`);
-        const services = this.categoryService.getServicesByCategory(headers.category_id);
-        this.logger.log(`INICIA OBTENCIÓN DE LOS SERVICIOS DE LA CATEGORÍA CON ID ${headers.category_id}`);
-        return services;
+        return this.categoryService.getServicesByCategory(headers.category_id)
+            .then((services) => {
+                this.logger.log(`INICIA OBTENCIÓN DE LOS SERVICIOS DE LA CATEGORÍA CON ID ${headers.category_id}`);
+                return services;
+            })
+            .catch(err => {
+                throw err;
+            });
     }
 }
