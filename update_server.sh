@@ -7,4 +7,5 @@ npm run build
 echo "--Ya generó la nueva versión--"
 pm2 start dist/src/main.js --name tasky
 echo "--Ya inició en nuevo servidor--"
+pm2 monit
 
