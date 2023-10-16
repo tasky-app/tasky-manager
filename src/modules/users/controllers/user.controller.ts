@@ -71,7 +71,7 @@ export class UserController {
     }
 
     @Put()
-    public async editUserInfo(@Body() user: User) {
+    public async editUserInfo(@Body() user: any) {
         this.logger.log(JSON.stringify(user));
         this.logger.log(`[CEL: ${user.cellphone}] INICIA ACTUALIZACIÓN DE LA INFORMACIÓN DEL USUARIO EN BASE DE DATOS`);
         return this.userService.updateUser(user).then(() => {
