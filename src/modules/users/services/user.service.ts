@@ -114,12 +114,12 @@ export class UserService implements IUserService {
         
     }
 
-    async updateUser(cellphone, user: User): Promise<void> {
-        this.logger.log(`[CEL:${cellphone}] inicia actualización del usuario en base de datos con info -> ${JSON.stringify(user)}`);
-        await this.userRepository.update({cellphone: cellphone}, user).then(() => {
-            this.logger.log(`[CEL:${cellphone}] finaliza actualización del usuario en base de datos`);
+    async updateUser(user: User): Promise<void> {
+        this.logger.log(`[CEL:${user.cellphone}] inicia actualización del usuario en base de datos con info -> ${JSON.stringify(user)}`);
+        await this.userRepository.update({cellphone: user.cellphone}, user).then(() => {
+            this.logger.log(`[CEL:${user.cellphone}] finaliza actualización del usuario en base de datos`);
         }).catch(err => {
-            this.logger.log(`[CEL:${cellphone}] ocurrió un error al actualizar usuario err -> ${err}`);
+            this.logger.log(`[CEL:${user.cellphone}] ocurrió un error al actualizar usuario err -> ${err}`);
             throw new TaskyException(500, "Error al actualizar cliente");
         })
 
