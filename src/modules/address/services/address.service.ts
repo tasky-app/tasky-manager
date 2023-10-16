@@ -109,7 +109,7 @@ export class AddressService implements IAddressService {
     async updateMainAddress(cellphone: string, address: Address) {
         this.logger.log(`[CEL: ${cellphone}] inicia proceso de actualización de la dirección en base de datos: ${JSON.stringify(address)}`);
         await this.disableCurrentMainAddress(cellphone);
-        this.updateMainAddressQuery(cellphone, true, address.id);
+        await this.updateMainAddressQuery(cellphone, true, address);
     }
 
     async deleteAddress(cellphone: string, address: Address) {
@@ -126,24 +126,23 @@ export class AddressService implements IAddressService {
             })
     }
 
-    private updateMainAddressQuery(cellphone: string, isMainAddress: boolean, addressId: number) {
-        this.addressRepository.createQueryBuilder('update_address')
-            .update(Address)
-            .where("address_id = :address", { address: addressId })
-            .set({
-                mainAddress: isMainAddress,
-            }).execute().then(() => {
-                this.logger.log(`[CEL: ${cellphone}] finaliza proceso de actualización de la dirección en base de datos a estado -> ${isMainAddress}`);
-            }).catch(err => {
-                this.logger.error(`[CEL: ${cellphone}] Ocurrió un error al actualizar la dirección - error: ${JSON.stringify(err)}`);
-                throw new TaskyException(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error al actualizar la dirección")
-            });
+    private async updateMainAddressQuery(cellphone: string, isMainAddress: boolean, mainAddress: Address)  {
+        return this.addressRepository.update({
+            userId: {
+                cellphone: cellphone
+            }
+        }, mainAddress).then(() => {
+            this.logger.log(`[CEL: ${cellphone}] finaliza proceso de actualización de la dirección en base de datos a estado -> ${isMainAddress}`);
+        }).catch(err => {
+            this.logger.error(`[CEL: ${cellphone}] Ocurrió un error al actualizar la dirección - error: ${JSON.stringify(err)}`);
+            throw new TaskyException(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error al actualizar la dirección")
+        });
     }
 
     private async disableCurrentMainAddress(cellphone: string) {
         await this.getMainAddress(cellphone)
-            .then((mainAddress) => {
-                this.updateMainAddressQuery(cellphone, false, mainAddress.id);
+            .then(async (mainAddress) => {
+                await this.updateMainAddressQuery(cellphone, false, mainAddress);
             }).catch((err) => {
                 if (err.status == HttpStatus.NOT_FOUND) {
                     this.logger.log(`[CEL: ${cellphone}] No hay direcciones principales para actualizar, se continua proceso+`);
