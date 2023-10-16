@@ -109,7 +109,7 @@ export class AddressService implements IAddressService {
     async updateMainAddress(cellphone: string, address: Address) {
         this.logger.log(`[CEL: ${cellphone}] inicia proceso de actualización de la dirección en base de datos: ${JSON.stringify(address)}`);
         await this.disableCurrentMainAddress(cellphone);
-        await this.updateMainAddressQuery(cellphone, true, address);
+        await this.updateMainAddressQuery(cellphone, true, address.id);
     }
 
     async deleteAddress(cellphone: string, address: Address) {
@@ -126,12 +126,9 @@ export class AddressService implements IAddressService {
             })
     }
 
-    private async updateMainAddressQuery(cellphone: string, isMainAddress: boolean, mainAddress: Address)  {
-        return this.addressRepository.update({
-            userId: {
-                cellphone: cellphone
-            }
-        }, mainAddress).then(() => {
+    private async updateMainAddressQuery(cellphone: string, isMainAddress: boolean, addressId: number)  {
+        return this.addressRepository.query(`UPDATE addresses AS add INNER JOIN user AS u ON add.user_id = u.user_id SET main_address = ${isMainAddress} WHERE u.cellphone = '${cellphone}' AND add.address_id = ${addressId}`)
+        .then(() => {
             this.logger.log(`[CEL: ${cellphone}] finaliza proceso de actualización de la dirección en base de datos a estado -> ${isMainAddress}`);
         }).catch(err => {
             this.logger.error(`[CEL: ${cellphone}] Ocurrió un error al actualizar la dirección - error: ${JSON.stringify(err)}`);
@@ -142,7 +139,7 @@ export class AddressService implements IAddressService {
     private async disableCurrentMainAddress(cellphone: string) {
         await this.getMainAddress(cellphone)
             .then(async (mainAddress) => {
-                await this.updateMainAddressQuery(cellphone, false, mainAddress);
+                await this.updateMainAddressQuery(cellphone, false, mainAddress.id);
             }).catch((err) => {
                 if (err.status == HttpStatus.NOT_FOUND) {
                     this.logger.log(`[CEL: ${cellphone}] No hay direcciones principales para actualizar, se continua proceso+`);
