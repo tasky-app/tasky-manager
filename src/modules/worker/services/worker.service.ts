@@ -27,7 +27,7 @@ export class WorkerService implements IWorkerService {
     async getWorkersByService(serviceId: number): Promise<Worker[]> {
         this.logger.log(`[SERVICE ID:${serviceId}] inicia obtención de los profesionales por servicio`)
         return this.workerServicesRepository.find({
-            relations: { worker: { user: true } },
+            relations: { worker: { user: true, category: true } },
             where: { service: { id: serviceId } },
         }).then(response => {
             const workersList = response.map(workerService => workerService.worker);
