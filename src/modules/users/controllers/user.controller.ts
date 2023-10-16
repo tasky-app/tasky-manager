@@ -71,10 +71,10 @@ export class UserController {
     }
 
     @Put()
-    public async editUserInfo(@Body() body: User) {
-        this.logger.log(`[CEL: ${body.cellphone}] INICIA ACTUALIZACIÓN DE LA INFORMACIÓN DEL USUARIO EN BASE DE DATOS`);
-        return this.userService.updateUser(body.cellphone, body).then(() => {
-            this.logger.log(`[CEL: ${body.cellphone}] FINALIZA ACTUALIZACIÓN DE LA INFORMACIÓN DEL USUARIO EN BASE DE DATOS`);
+    public async editUserInfo(@Body() user: User) {
+        this.logger.log(`[CEL: ${user.cellphone}] INICIA ACTUALIZACIÓN DE LA INFORMACIÓN DEL USUARIO EN BASE DE DATOS`);
+        return this.userService.updateUser(user).then(() => {
+            this.logger.log(`[CEL: ${user.cellphone}] FINALIZA ACTUALIZACIÓN DE LA INFORMACIÓN DEL USUARIO EN BASE DE DATOS`);
         }).catch(err => { throw err });
     }
 }
