@@ -80,7 +80,9 @@ export class WorkerService implements IWorkerService {
 
         return this.workerServicesRepository.find({
             relations: {
-                worker: true,
+                worker: {
+                    category: true
+                },
                 service: true,
             },
             where: {
