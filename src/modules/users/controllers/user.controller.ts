@@ -70,10 +70,11 @@ export class UserController {
             });
     }
 
-    //TODO PENDING
     @Put()
-    public async editUserInfo(@Headers() headers) {
-        this.logger.log(`[CC: ${headers.documentNumber}] INICIA ACTUALIZACIÓN DE LA INFORMACIÓN DEL USUARIO EN BASE DE DATOS`);
-        this.logger.log(`[CC: ${headers.documentNumber}] FINALIZA ACTUALIZACIÓN DE LA INFORMACIÓN DEL USUARIO EN BASE DE DATOS`);
+    public async editUserInfo(@Headers() headers, @Body() body) {
+        this.logger.log(`[CEL: ${headers.cellphone}] INICIA ACTUALIZACIÓN DE LA INFORMACIÓN DEL USUARIO EN BASE DE DATOS`);
+        return this.userService.updateUser(headers.cellphone, body.user).then(() => {
+            this.logger.log(`[CEL: ${headers.cellphone}] FINALIZA ACTUALIZACIÓN DE LA INFORMACIÓN DEL USUARIO EN BASE DE DATOS`);
+        }).catch(err => { throw err });
     }
 }

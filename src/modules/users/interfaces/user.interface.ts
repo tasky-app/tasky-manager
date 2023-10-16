@@ -8,4 +8,5 @@ export interface IUserService {
     getUserInfoByCellphone(cellphone: string): Promise<User>;
     saveClient(user: User): Promise<void>;
     saveWorker(user: User, category: Category): Promise<void>
+    updateUser(cellphone, user: User): Promise<void>
 }
