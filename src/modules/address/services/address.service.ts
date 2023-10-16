@@ -127,7 +127,7 @@ export class AddressService implements IAddressService {
     }
 
     private async updateMainAddressQuery(cellphone: string, isMainAddress: boolean, addressId: number)  {
-        return this.addressRepository.query(`UPDATE addresses AS add INNER JOIN user AS u ON add.user_id = u.user_id SET main_address = ${isMainAddress} WHERE u.cellphone = '${cellphone}' AND add.address_id = ${addressId}`)
+        return this.addressRepository.query(`UPDATE addresses a INNER JOIN user u ON a.user_id = u.user_id SET main_address = ${isMainAddress} WHERE a.address_id = ${addressId};`)
         .then(() => {
             this.logger.log(`[CEL: ${cellphone}] finaliza proceso de actualización de la dirección en base de datos a estado -> ${isMainAddress}`);
         }).catch(err => {
