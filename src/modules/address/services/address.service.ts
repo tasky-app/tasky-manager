@@ -82,6 +82,8 @@ export class AddressService implements IAddressService {
             } else {
                 throw new TaskyException(HttpStatus.NOT_FOUND, "No hay direcciones principal para el cliente");
             }
+        }).catch((err) => {
+            throw err;
         });
     }
 
@@ -139,7 +141,13 @@ export class AddressService implements IAddressService {
     }
 
     private async disableCurrentMainAddress(cellphone: string) {
-        const actualMainAddress = await this.getMainAddress(cellphone);
-        this.updateMainAddressQuery(cellphone, false, actualMainAddress.id);
+        await this.getMainAddress(cellphone)
+            .then((mainAddress) => {
+                this.updateMainAddressQuery(cellphone, false, mainAddress.id);
+            }).catch((err) => {
+                if (err.status == HttpStatus.NOT_FOUND) {
+                    this.logger.log(`[CEL: ${cellphone}] No hay direcciones principales para actualizar, se continua proceso+`);
+                }
+            });
     }
 }
