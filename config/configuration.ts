@@ -1,10 +1,8 @@
 export default () => ({
   port: parseInt(process.env.PORT, 10) || 3000,
-  twilio_account_sid: process.env.TWILIO_ACCOUNT_SID || "ACa4234bf9038ae0707ef0ad68b2fa6fe3",
-  twilio_account_token: process.env.TWILIO_ACCOUNT_TOKEN || "dd420bd1cb83d6f588c8f49a2fbbafd0",
-  twilio_verify_sid: process.env.TWILIO_VERIFY_SID || "VA6b36c1961e6a5af9d29ead2d87a22b77",
-  db_port: parseInt(process.env.DB_PORT) || 3306,
-  db_username: process.env.DB_USERNAME || "root",
-  db_pass: process.env.DB_PASS || "Colombia1*",
-  db_name: process.env.DB_NAME || "tasky_db"
+  twilio_account_sid: process.env.TWILIO_ACCOUNT_SID || 'ACbdd871f36cdd40265aeb5fb0b1fda496',
+  twilio_account_token: process.env.TWILIO_ACCOUNT_TOKEN || '68acc2da18262be27413381fe2c6d284',
+  twilio_messaging_sid: process.env.TWILIO_MESSAGING_SID || 'MG1219345642ed31d3905a97f7ecdf2507',
+  secret_reference: process.env.SECRET_REFERENCE || 'secret',
 });
+
