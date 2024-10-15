@@ -1,4 +1,4 @@
-import { Controller, Headers, Logger, Post, Req } from '@nestjs/common';
+import { Controller, Request, Logger, Post, Req } from '@nestjs/common';
 import { NotificationService } from '../services/notification.service';
 
 @Controller('notification')

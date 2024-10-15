@@ -9,14 +9,14 @@ const messagingSid = configuration().twilio_messaging_sid;
 
 @Injectable()
 export class NotificationService implements INotificationService {
-  constructor(@Inject('TwilioClient') private readonly twilioClient: Twilio) {
+  constructor(@Inject('TwilioClient') private readonly client: Twilio) {
   }
 
   private readonly logger = new Logger(NotificationService.name);
 
   sendSms(cellphone: string, type: ENotificationType): Promise<void> {
     this.logger.log(`INICIA ENVIO DE SMS DE TIPO ${type} A -> ${cellphone}`);
-    return this.twilioClient.messages
+    return this.client.messages
       .create({
         body: SmsTemplates.Messages[type],
         messagingServiceSid: messagingSid,

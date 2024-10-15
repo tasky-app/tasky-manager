@@ -3,7 +3,6 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from '../../config/configuration';
 import { ContractModule } from './contract/contract.module';
 import { NotificationModule } from './notification/notification.module';
-import { FirestoreProviders } from './firestore/providers/firestore.providers';
 import { TaskersModule } from './taskers/taskers.module';
 
 @Module({
@@ -14,7 +13,7 @@ import { TaskersModule } from './taskers/taskers.module';
     TaskersModule,
   ],
   controllers: [],
-  providers: [...FirestoreProviders,],
+  providers: [],
 })
 export class CoreModule {
 }

@@ -1,5 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { CoreModule } from '../legacy/modules/core.module';
+import { CoreModule } from './modules/core.module';
+
+import * as dotenv from 'dotenv';
+
+dotenv.config({ path: `../config/env/${process.env.NODE_ENV}.env` });
 
 async function bootstrap() {
   console.log("--- INIT ---")
