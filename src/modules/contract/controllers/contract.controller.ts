@@ -1,5 +1,6 @@
-import { Controller, Inject, Logger, Post, Headers, Body, Get, Req } from "@nestjs/common";
+import { Controller, Logger, Post, Request, Req } from "@nestjs/common";
 import { ContractService } from "../services/contract.service";
+import { HeadersConstants } from "src/app/constants/headers";
 
 @Controller("contract")
 export class ContractController {
@@ -11,8 +12,13 @@ export class ContractController {
 
     @Post('post-tasks')
     async executePostContractTasks(@Req() request: Request) {
-        this.logger.log(`[CONTRACT ID:${request.headers['X-Contract-Id']}] INICIA EJECUCIÓN DE TAREAS POST-CONTRATACIÓN`)
-        await this.contractService.(request);
-        this.logger.log(`[CLIENT CEL:${request.headers['X-Contract-Id']}] FINALIZA EJECUCIÓN DE TAREAS POST-CONTRATACIÓN`)
+        this.logger.log(request.headers);
+        this.logger.log(`[CONTRACT ID:${request.headers[HeadersConstants.CONTRACT_ID]} INICIA EJECUCIÓN DE TAREAS POST-CONTRATACIÓN`)
+        await this.contractService.executePostContractTasks(
+            request.headers[HeadersConstants.CONTRACT_ID],
+            request.headers[HeadersConstants.COUNTRY]
+        );
+        
+        this.logger.log(`[CONTRACT CEL:${request.headers[HeadersConstants.CONTRACT_ID]}] FINALIZA EJECUCIÓN DE TAREAS POST-CONTRATACIÓN`)
     }
 }

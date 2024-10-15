@@ -10,7 +10,7 @@ export class CloudTasksService implements ICloudTasksService {
 
     private readonly logger = new Logger(CloudTasksService.name);
     
-    constructor(@Inject('GTasksClient') private readonly tasksClient: CloudTasksClient) {
+    constructor() {
     }
     createContractTimeoutTask(contractId: string): Promise<void> {
         throw new Error("Method not implemented.");

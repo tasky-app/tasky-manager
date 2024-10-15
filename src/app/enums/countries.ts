@@ -1,4 +1,4 @@
 export enum ECountries {
-    CL = 'chile', 
-    CO = 'colombia',
+    CHILE = 'CL', 
+    COLOMBIA = 'CO',
 }
