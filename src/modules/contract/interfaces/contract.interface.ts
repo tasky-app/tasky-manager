@@ -1,8 +1,7 @@
-import { Contract } from "src/database/entities/Contract";
-import { SaveContractDto } from "../dto/saveContractDto";
+import { ECountries } from "src/app/enums/countries";
+import { Contracts } from "src/modules/firestore/collections/contract";
 
 export interface IContractService {
-    getContractInfoById(contractId: number): Promise<Contract>;
-    createContract(request: SaveContractDto): Promise<void>;
-    getClientContracts(clientId: number): Promise<Contract[]>;
+    executePostContractTasks(contractId: string, country: ECountries): Promise<void>;
+    getContractById(contractId: string, country: ECountries): Promise<Contracts>;
 }

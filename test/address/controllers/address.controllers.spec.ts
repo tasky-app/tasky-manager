@@ -1,9 +1,9 @@
 import {Test, TestingModule} from "@nestjs/testing";
-import {AddressController} from '../../../src/modules/address/controllers/address.controller';
-import {AddressService} from '../../../src/modules/address/services/address.service';
-import {Address} from '../../../src/database/entities/Address';
+import {AddressController} from '../../../legacy/modules/address/controllers/address.controller';
+import {AddressService} from '../../../legacy/modules/address/services/address.service';
+import {Address} from '../../../legacy/database/entities/Address';
 import {getRepositoryToken} from '@nestjs/typeorm';
-import {ContactInfo} from '../../../src/database/entities/ContactInfo';
+import {ContactInfo} from '../../../legacy/database/entities/ContactInfo';
 
 describe('AddressController', () => {
     let controller: AddressController;

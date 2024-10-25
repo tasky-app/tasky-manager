@@ -1,7 +1,7 @@
 import {Test, TestingModule} from '@nestjs/testing';
 import {INestApplication} from '@nestjs/common';
 import * as request from 'supertest';
-import {CoreModule} from '../src/modules/core.module';
+import {CoreModule} from '../legacy/modules/core.module';
 import {TypeOrmModule} from '@nestjs/typeorm';
 
 describe('AppController (e2e)', () => {
