@@ -10,11 +10,11 @@ import * as admin from 'firebase-admin';
 import { Contracts } from "src/modules/firestore/collections/contract";
 import { TaskersService } from "src/modules/taskers/services/taskers.service";
 import { getFirestore } from "firebase-admin/firestore";
-import { SecretManager } from "config/secret_manager";
-import configuration from "config/configuration";
+// import { SecretManager } from "config/secret_manager";
+// import configuration from "config/configuration";
 
-const secretManager = new SecretManager();
-const secretReference = configuration().secret_name;
+// const secretManager = new SecretManager();
+// const secretReference = configuration().secret_name;
 
 
 @Injectable()
