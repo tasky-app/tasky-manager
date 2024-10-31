@@ -1,10 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ContractModule } from './contracts/contracts.module';
-import { AvailabilityModule } from './availability/availability.module';
-import { SecretsModule } from './secrets';
-import { TaskersModule } from './taskers/taskers.module';   
+import { CoreModule } from './core/core.module';
 
 @Module({
-    imports: [ContractModule, AvailabilityModule, SecretsModule, TaskersModule],
+    imports: [CoreModule],
 })
 export class AppModule { }

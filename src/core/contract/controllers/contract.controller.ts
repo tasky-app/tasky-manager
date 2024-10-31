@@ -1,4 +1,4 @@
-import { Controller, Logger, Post, Request, Req } from "@nestjs/common";
+import { Controller, Logger, Post, Request, Req, Get, Param } from "@nestjs/common";
 import { ContractService } from "../services/contract.service";
 import { HeadersConstants } from "src/app/constants/headers";
 
@@ -8,6 +8,11 @@ export class ContractController {
     private readonly logger = new Logger(ContractController.name);
 
     constructor(private readonly contractService: ContractService) {
+    }
+
+    @Get(':id/balanceTasker')
+    async getTotalBalance(@Param('id') id: string): Promise<number> {
+        return await this.contractService.calculateTotalBalance(id);
     }
 
     @Post('post-tasks')

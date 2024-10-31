@@ -1,20 +1,12 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { IContractService } from "../interfaces/contract.interface";
-import { CloudTasksService } from "src/modules/cloud_tasks/services/cloud_tasks.service";
-import { NotificationService } from "src/modules/notification/services/notification.service";
-import { ENotificationType } from "src/modules/notification/enums/notification_type";
+import { CloudTasksService } from "src/core/cloud_tasks/services/cloud_tasks.service";
 import { ECountries } from "src/app/enums/countries";
 import { Firestore } from "@google-cloud/firestore";
-import * as admin from 'firebase-admin';
-
-import { Contracts } from "src/modules/firestore/collections/contract";
-import { TaskersService } from "src/modules/taskers/services/taskers.service";
-import { getFirestore } from "firebase-admin/firestore";
-// import { SecretManager } from "config/secret_manager";
-// import configuration from "config/configuration";
-
-// const secretManager = new SecretManager();
-// const secretReference = configuration().secret_name;
+import { Contracts } from "src/core/firestore/collections/contract";
+import { TaskersService } from "src/core/taskers/services/taskers.service";
+import { NotificationService } from "src/core/notification/services/notification.service";
+import { ENotificationType } from "src/core/notification/enums/notification_type";
 
 
 @Injectable()
@@ -59,5 +51,32 @@ export class ContractService implements IContractService {
             .then(() => {
                 this.logger.log(`Finaliza publicación del evento en la cola`)
             });
+    }
+
+    async calculateTotalBalance(taskerId: string): Promise<number> {
+        const snapshot = await this.CL_DB.collection('contracts')
+            .where('stateService', '==', 'finished')
+            .where('taskerId', '==', taskerId)
+            .get();
+
+        if (snapshot.empty) {
+            console.log(`No se encontraron contratos finalizados para el tasker con ID ${taskerId}`);
+            return 0;
+        }
+
+        let totalBalance = 0;
+
+        snapshot.forEach(doc => {
+            const contract = doc.data();
+            if (contract.totalPayment) {
+                if (contract.typeMembership === 'free') {
+                    totalBalance += contract.totalPayment * 0.7;
+                } else if (contract.typeMembership === 'premium') {
+                    totalBalance += contract.totalPayment;
+                }
+            }
+        });
+
+        return Math.round(totalBalance);
     }
 }

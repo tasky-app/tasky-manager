@@ -4,11 +4,12 @@ import { getFirestore } from 'firebase-admin/firestore';
 export const FirestoreProviders = [
     {
         provide: 'APP',
-        useFactory: () => {
+        inject: ['CREDENTIALS'],
+        useFactory: (credentials) => {
             let app;
             if (!admin.apps.length) {
                 app = admin.initializeApp({
-                    credential: admin.credential.applicationDefault(),
+                    credential: admin.credential.cert(JSON.parse(credentials))
                 });
             } else {
                 app = admin.app();

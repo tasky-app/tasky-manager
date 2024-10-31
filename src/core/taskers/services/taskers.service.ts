@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from "@nestjs/common";
 import configuration from "config/configuration";
 import { ITaskersService } from "../interfaces/taskers.interface";
 import { CloudTasksClient } from '@google-cloud/tasks';
-import { Tasker } from "src/modules/firestore/collections/taskers";
+import { Tasker } from "src/core/firestore/collections/taskers";
 import { ECountries } from "src/app/enums/countries";
 import { Firestore } from "@google-cloud/firestore";
 
