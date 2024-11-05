@@ -11,8 +11,10 @@ export class NotificationController {
 
   @Post('sms')
   public async sendSms(@Req() request: Request): Promise<void> {
-    this.logger.log(`INICIA ENVIO DE SMS`);
-    await this.notificationService.sendSms(request.headers['X-Cellphone'], request.headers['X-SmsType']);
-    this.logger.log(`FINALIZA ENVIO DE SMS`);
+    return await this.notificationService.sendSms(
+      request.headers['x-cellphone'],
+      request.headers['x-smstype'],
+      request.headers['x-name'] || undefined
+    );
   }
 }

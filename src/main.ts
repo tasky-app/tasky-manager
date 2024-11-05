@@ -1,20 +1,29 @@
 import { NestFactory } from '@nestjs/core';
-// import { CoreModule } from './modules/core.module';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-require('dotenv').config();
-
 import * as dotenv from 'dotenv';
 
-// dotenv.config({ path: `../config/env/${process.env.NODE_ENV}.env` });
+dotenv.config();
 
 async function bootstrap() {
-  console.log("--- INIT ---");
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
-  app.useGlobalPipes(new ValidationPipe());
+
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
   const port = process.env.PORT || 4000;
   await app.listen(port);
+  console.log(`Servidor corriendo ${port}`);
 }
 
 bootstrap();

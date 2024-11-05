@@ -4,5 +4,5 @@ export default () => ({
   twilio_account_token: process.env.TWILIO_ACCOUNT_TOKEN || '',
   twilio_messaging_sid: process.env.TWILIO_MESSAGING_SID || '',
   secret_name: process.env.SECRET_NAME || 'SECRET_ADMIN_PANEL',
-  gcp_project_id_name: process.env.SECRET_NAME || 'tasky-operation-dev',
+  gcp_project_id_name: process.env.PROJECT_ID_NAME || 'tasky-operation-dev',
 });

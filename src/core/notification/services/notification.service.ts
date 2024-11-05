@@ -1,30 +1,34 @@
-import { Inject, Injectable, Logger } from "@nestjs/common";
-import configuration from "config/configuration";
-import { Twilio } from "twilio";
+import { Injectable } from "@nestjs/common";
+import * as Twilio from 'twilio';
+
 import { INotificationService } from "../interfaces/notification.interface";
 import { ENotificationType } from "../enums/notification_type";
 import { SmsTemplates } from "../utils/sms_templates";
 
-const messagingSid = configuration().twilio_messaging_sid;
-
 @Injectable()
 export class NotificationService implements INotificationService {
-  constructor(@Inject('TwilioClient') private readonly client: Twilio) {
+  private client: Twilio.Twilio;
+
+  constructor() {
+    this.client = Twilio(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN,
+    );
   }
 
-  private readonly logger = new Logger(NotificationService.name);
+  async sendSms(cellphone: string, type: ENotificationType, name?: string): Promise<void> {
+    try {
+      const messageBody = SmsTemplates.Messages[type](name);
 
-  sendSms(cellphone: string, type: ENotificationType): Promise<void> {
-    this.logger.log(`INICIA ENVIO DE SMS DE TIPO ${type} A -> ${cellphone}`);
-    return this.client.messages
-      .create({
-        body: SmsTemplates.Messages[type],
-        messagingServiceSid: messagingSid,
-        to: cellphone
-      })
-      .then(message => {
-        this.logger.log(`FINALIZA ENVIO DE SMS DE TIPO ${type} A -> ${cellphone}`);
-        console.log(message.sid)
+      const response = await this.client.messages.create({
+        body: messageBody,
+        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
+        to: cellphone,
       });
+
+      console.log("Mensaje enviado:", response);
+    } catch (error) {
+      console.error("Error al enviar el SMS:", error.message);
+    }
   }
 }

@@ -23,14 +23,12 @@ export class ContractService implements IContractService {
     ) { }
 
     async getContractById(contractId: string, country: ECountries): Promise<Contracts> {
-        this.logger.log(`[ID:${contractId}] [COUNTRY:${country}] Inicia obtención de la información del contrato`);
         const database =  ECountries.COLOMBIA.includes(country) ? this.COL_DB : this.CL_DB;
         const collection = Contracts.collectionName;
         const ref = await database.collection(collection).doc(contractId);
         const docInfo = await ref.get();
         if (docInfo.exists) {
             console.log('Document data:', docInfo.data());
-            this.logger.log(`[ID:${contractId}] [COUNTRY:${country}] Finaliza obtención de la información del contrato`);
             return Contracts.fromJson(docInfo.data());
         } else {
             throw Error('No existe el contrato en la bd');
@@ -53,8 +51,11 @@ export class ContractService implements IContractService {
             });
     }
 
-    async calculateTotalBalance(taskerId: string): Promise<number> {
-        const snapshot = await this.CL_DB.collection('contracts')
+    async calculateTotalBalance(taskerId: string, country: ECountries): Promise<number> {
+        
+        const db = country === ECountries.COLOMBIA ? this.COL_DB : this.CL_DB;
+
+        const snapshot = await db.collection('contracts')
             .where('stateService', '==', 'finished')
             .where('taskerId', '==', taskerId)
             .get();
@@ -79,4 +80,5 @@ export class ContractService implements IContractService {
 
         return Math.round(totalBalance);
     }
+
 }

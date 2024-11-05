@@ -11,8 +11,8 @@ import configuration from "config/configuration";
       provide: "TwilioClient",
       useFactory: async () => {
         return require("twilio")(
-          configuration().twilio_account_sid,
-          configuration().twilio_account_token
+          process.env.TWILIO_ACCOUNT_SID,
+          process.env.TWILIO_AUTH_TOKEN,
         );
       }
     },
