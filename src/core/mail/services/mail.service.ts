@@ -4,17 +4,16 @@ import { SendEmailDto } from '../dto/send-email.dto';
 
 @Injectable()
 export class MailService {
+
     constructor(@Inject('SENDGRID') private readonly sendGrid) { }
 
     async sendEmail(sendEmailDto: SendEmailDto, attachments?: { filename: string; content: Buffer }[]) {
         const { to, subject, text, html } = sendEmailDto;
 
-        // Validación de los campos requeridos
         if (!to || !subject || !text) {
             throw new BadRequestException('Los campos "to", "subject" y "text" son obligatorios');
         }
 
-        // Validación del formato del email
         if (!this.isValidEmail(to)) {
             throw new BadRequestException('El campo "to" debe ser un email válido');
         }
@@ -27,8 +26,8 @@ export class MailService {
             html,
             attachments: attachments?.map(att => ({
                 filename: att.filename,
-                content: att.content.toString('base64'), // Convertir el Buffer a Base64
-                type: 'application/pdf', // Tipo MIME del PDF
+                content: att.content.toString('base64'), 
+                type: 'application/pdf', 
                 disposition: 'attachment',
             })),
         };
