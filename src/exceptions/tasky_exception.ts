@@ -1,4 +1,4 @@
-import {HttpException} from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 
 export class TaskyException extends HttpException {
 

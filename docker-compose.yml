@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - TWILIO_ACCOUNT_SID=ACa4234bf9038ae0707ef0ad68b2fa6fe3
+      - TWILIO_ACCOUNT_TOKEN=dd420bd1cb83d6f588c8f49a2fbbafd0
+      - TWILIO_MESSAGING_SID=MG1219345642ed31d3905a97f7ecdf2507
+    ports:
+      - "3000:3000"

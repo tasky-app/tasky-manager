@@ -1,0 +1,84 @@
+import { Inject, Injectable, Logger } from "@nestjs/common";
+import { IContractService } from "../interfaces/contract.interface";
+import { CloudTasksService } from "src/core/cloud_tasks/services/cloud_tasks.service";
+import { ECountries } from "src/app/enums/countries";
+import { Firestore } from "@google-cloud/firestore";
+import { Contracts } from "src/core/firestore/collections/contract";
+import { TaskersService } from "src/core/taskers/services/taskers.service";
+import { NotificationService } from "src/core/notification/services/notification.service";
+import { ENotificationType } from "src/core/notification/enums/notification_type";
+
+
+@Injectable()
+export class ContractService implements IContractService {
+
+    private readonly logger = new Logger(ContractService.name);
+
+    constructor(
+        @Inject('COLOMBIA') private readonly COL_DB: Firestore,
+        @Inject('CHILE') private readonly CL_DB: Firestore,
+        private readonly tasksService: CloudTasksService,
+        private readonly taskerService: TaskersService,
+        private readonly notificationService: NotificationService,
+    ) { }
+
+    async getContractById(contractId: string, country: ECountries): Promise<Contracts> {
+        const database =  ECountries.COLOMBIA.includes(country) ? this.COL_DB : this.CL_DB;
+        const collection = Contracts.collectionName;
+        const ref = await database.collection(collection).doc(contractId);
+        const docInfo = await ref.get();
+        if (docInfo.exists) {
+            console.log('Document data:', docInfo.data());
+            return Contracts.fromJson(docInfo.data());
+        } else {
+            throw Error('No existe el contrato en la bd');
+        }
+    }
+
+    async executePostContractTasks(contractId: string, country: ECountries): Promise<void> {
+        const contract = await this.getContractById(contractId, country);
+        const tasker = await this.taskerService.getTaskerById(contract.taskerId, country);
+        const phoneNumber = `${tasker.phoneExtension}${tasker.phoneNumber}`;
+        await this.notificationService.sendSms(phoneNumber, ENotificationType.CONTRACT_CREATED);
+        // await this.publishTask(contractId);
+    }
+
+    private async publishTask(contractId: string) {
+        this.logger.log(`Inicia publicación del evento en la cola`)
+        this.tasksService.createContractTimeoutTask(contractId)
+            .then(() => {
+                this.logger.log(`Finaliza publicación del evento en la cola`)
+            });
+    }
+
+    async calculateTotalBalance(taskerId: string, country: ECountries): Promise<number> {
+        
+        const db = country === ECountries.COLOMBIA ? this.COL_DB : this.CL_DB;
+
+        const snapshot = await db.collection('contracts')
+            .where('stateService', '==', 'finished')
+            .where('taskerId', '==', taskerId)
+            .get();
+
+        if (snapshot.empty) {
+            console.log(`No se encontraron contratos finalizados para el tasker con ID ${taskerId}`);
+            return 0;
+        }
+
+        let totalBalance = 0;
+
+        snapshot.forEach(doc => {
+            const contract = doc.data();
+            if (contract.totalPayment) {
+                if (contract.typeMembership === 'free') {
+                    totalBalance += contract.totalPayment * 0.7;
+                } else if (contract.typeMembership === 'premium') {
+                    totalBalance += contract.totalPayment;
+                }
+            }
+        });
+
+        return Math.round(totalBalance);
+    }
+
+}
