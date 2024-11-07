@@ -123,14 +123,17 @@ export class TaskersService implements ITaskersService {
         page.drawText('Categoria:', { x: 50, y: yPosition, size: 14, font: fontBold });
         yPosition -= 20;
 
-        // Obtener nombres de las categorías
+        // Obtener nombres de las categorías y filtrar duplicados
         const categoryNames = await Promise.all(taskerData.categories.map(async (category) => {
             const name = await this.nameCategory(category.categoryId, country);
             return `${name}`;
         }));
 
-        // Dibujar cada categoría en el PDF
-        for (const categoryText of categoryNames) {
+        // Filtrar duplicados usando un Set
+        const uniqueCategoryNames = Array.from(new Set(categoryNames));
+
+        // Dibujar cada categoría única en el PDF
+        for (const categoryText of uniqueCategoryNames) {
             yPosition = this.drawWrappedText(page, categoryText, 50, yPosition, fontRegular, 12, width - 100);
             yPosition -= 15;
         }
