@@ -57,6 +57,7 @@ export class TaskersService implements ITaskersService {
         const fechaCompleta = `${diaActual}/${mesActual}/${añoActual}`;
 
         const docData = snapshot.docs[0].data();
+
         const taskerData = {
             currentDay: diaActual,
             currentMonth: mesActual,
@@ -119,12 +120,17 @@ export class TaskersService implements ITaskersService {
 
         // Agregar título para los precios de subcategorías
         yPosition -= 20;
-        page.drawText('Servicios:', { x: 50, y: yPosition, size: 14, font: fontBold });
+        page.drawText('Categoria:', { x: 50, y: yPosition, size: 14, font: fontBold });
         yPosition -= 20;
 
-        // Iterar sobre las subcategorías y agregar el nombre y precio al PDF
-        for (const category of taskerData.categories) {
-            const categoryText = `- ${category.subcategoryName} - Precio: ${category.price}`;
+        // Obtener nombres de las categorías
+        const categoryNames = await Promise.all(taskerData.categories.map(async (category) => {
+            const name = await this.nameCategory(category.categoryId, country);
+            return `${name}`;
+        }));
+
+        // Dibujar cada categoría en el PDF
+        for (const categoryText of categoryNames) {
             yPosition = this.drawWrappedText(page, categoryText, 50, yPosition, fontRegular, 12, width - 100);
             yPosition -= 15;
         }
@@ -146,6 +152,18 @@ export class TaskersService implements ITaskersService {
         ]);
 
         return pdfBuffer;
+    }
+
+    async nameCategory(id: string, country: ECountries): Promise<string> {
+        const db = country === ECountries.COLOMBIA ? this.COL_DB : this.CL_DB;
+
+        const snapshot = await db.collection('categories').where('id', '==', id).get();
+        if (snapshot.empty) {
+            throw new Error(`No se encontró la categoría con ID ${id}`);
+        }
+
+        const docData = snapshot.docs[0].data();
+        return docData.name;
     }
 
     async finish_procedure_registration(taskerId: string, country: ECountries): Promise<object> {

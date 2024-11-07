@@ -37,10 +37,16 @@ export class TaskerController {
         const country = Array.isArray(countryHeader) ? countryHeader[0] : countryHeader;
 
         if (!Object.values(ECountries).includes(country as ECountries)) {
-            throw new Error(`Invalid country value: ${country}`);
+            return res.status(400).json({ error: `Invalid country value: ${country}` });
         }
-        await this.taskersService.finish_procedure_registration(taskerId, country as ECountries);
 
+        try {
+            const result = await this.taskersService.finish_procedure_registration(taskerId, country as ECountries);
+            return res.status(200).json(result);
+        } catch (error) {
+            console.error('Error en la operación:', error.message);
+            return res.status(500).json({ error: error.message });
+        }
     }
 
 

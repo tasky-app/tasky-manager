@@ -23,7 +23,7 @@ export class ContractService implements IContractService {
     ) { }
 
     async getContractById(contractId: string, country: ECountries): Promise<Contracts> {
-        const database =  ECountries.COLOMBIA.includes(country) ? this.COL_DB : this.CL_DB;
+        const database = ECountries.COLOMBIA.includes(country) ? this.COL_DB : this.CL_DB;
         const collection = Contracts.collectionName;
         const ref = await database.collection(collection).doc(contractId);
         const docInfo = await ref.get();
@@ -51,8 +51,7 @@ export class ContractService implements IContractService {
             });
     }
 
-    async calculateTotalBalance(taskerId: string, country: ECountries): Promise<number> {
-        
+    async calculateTotalBalance(taskerId: string, country: ECountries): Promise<object> {
         const db = country === ECountries.COLOMBIA ? this.COL_DB : this.CL_DB;
 
         const snapshot = await db.collection('contracts')
@@ -61,8 +60,11 @@ export class ContractService implements IContractService {
             .get();
 
         if (snapshot.empty) {
-            console.log(`No se encontraron contratos finalizados para el tasker con ID ${taskerId}`);
-            return 0;
+            return {
+                result: false,
+                msg: `No se encontraron contratos finalizados para el tasker con ID ${taskerId}`,
+                totalBalance: 0
+            };
         }
 
         let totalBalance = 0;
@@ -78,7 +80,12 @@ export class ContractService implements IContractService {
             }
         });
 
-        return Math.round(totalBalance);
+        return {
+            result: true,
+            msg: 'Balance calculado exitosamente',
+            totalBalance: Math.round(totalBalance)
+        };
     }
+
 
 }
