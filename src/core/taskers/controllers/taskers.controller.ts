@@ -29,4 +29,26 @@ export class TaskerController {
 
         res.end(pdfBuffer);
     }
+
+    @Post('finish-procedure-registration')
+    async finish_procedure_registration(@Req() request: Request, @Res() res: Response) {
+        const taskerId = request.headers[HeadersConstants.TASKER_ID] as string;
+        const countryHeader = request.headers[HeadersConstants.COUNTRY];
+        const country = Array.isArray(countryHeader) ? countryHeader[0] : countryHeader;
+
+        if (!Object.values(ECountries).includes(country as ECountries)) {
+            return res.status(400).json({ error: `Invalid country value: ${country}` });
+        }
+
+        try {
+            const result = await this.taskersService.finish_procedure_registration(taskerId, country as ECountries);
+            return res.status(200).json(result);
+        } catch (error) {
+            console.error('Error en la operación:', error.message);
+            return res.status(500).json({ error: error.message });
+        }
+    }
+
+
+
 }

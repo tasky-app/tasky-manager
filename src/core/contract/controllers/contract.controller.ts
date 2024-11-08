@@ -10,12 +10,13 @@ export class ContractController {
     }
 
     @Get('balanceTasker')
-    async getTotalBalance(@Req() request: Request): Promise<number> {
+    async getTotalBalance(@Req() request: Request): Promise<object> {
         return await this.contractService.calculateTotalBalance(
-            request.headers[HeadersConstants.TASKER_ID],
-            request.headers[HeadersConstants.COUNTRY]
+            request.headers[HeadersConstants.TASKER_ID] as string,
+            request.headers[HeadersConstants.COUNTRY] 
         );
     }
+
 
     @Post('post-tasks')
     async executePostContractTasks(@Req() request: Request) {
