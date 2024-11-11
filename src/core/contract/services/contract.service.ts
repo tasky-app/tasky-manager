@@ -40,7 +40,7 @@ export class ContractService implements IContractService {
         const tasker = await this.taskerService.getTaskerById(contract.taskerId, country);
         const phoneNumber = `${tasker.phoneExtension}${tasker.phoneNumber}`;
         await this.notificationService.sendSms(phoneNumber, ENotificationType.CONTRACT_CREATED);
-        // await this.publishTask(contractId);
+
     }
 
     private async publishTask(contractId: string) {
@@ -51,41 +51,60 @@ export class ContractService implements IContractService {
             });
     }
 
+
     async calculateTotalBalance(taskerId: string, country: ECountries): Promise<object> {
         const db = country === ECountries.COLOMBIA ? this.COL_DB : this.CL_DB;
+        Logger.log(`Iniciando cálculo de balance para el tasker con ID ${taskerId} en el país ${country}`, 'calculateTotalBalance');
 
-        const snapshot = await db.collection('contracts')
-            .where('stateService', '==', 'finished')
-            .where('taskerId', '==', taskerId)
-            .get();
+        try {
+            const snapshot = await db.collection('contracts')
+                .where('stateService', '==', 'finished')
+                .where('taskerId', '==', taskerId)
+                .get();
 
-        if (snapshot.empty) {
-            return {
-                result: false,
-                msg: `No se encontraron contratos finalizados para el tasker con ID ${taskerId}`,
-                totalBalance: 0
-            };
-        }
+            Logger.log(`Consulta realizada en la base de datos: ${snapshot.size} contratos encontrados`, 'calculateTotalBalance');
 
-        let totalBalance = 0;
-
-        snapshot.forEach(doc => {
-            const contract = doc.data();
-            if (contract.totalPayment) {
-                if (contract.typeMembership === 'free') {
-                    totalBalance += contract.totalPayment * 0.7;
-                } else if (contract.typeMembership === 'premium') {
-                    totalBalance += contract.totalPayment;
-                }
+            if (snapshot.empty) {
+                Logger.warn(`No se encontraron contratos finalizados para el tasker con ID ${taskerId}`, 'calculateTotalBalance');
+                return {
+                    result: false,
+                    msg: `No se encontraron contratos finalizados para el tasker con ID ${taskerId}`,
+                    totalBalance: 0
+                };
             }
-        });
 
-        return {
-            result: true,
-            msg: 'Balance calculado exitosamente',
-            totalBalance: Math.round(totalBalance)
-        };
+            let totalBalance = 0;
+
+            snapshot.forEach(doc => {
+                const contract = doc.data();
+                Logger.debug(`Procesando contrato con ID: ${doc.id} y datos: ${JSON.stringify(contract)}`, 'calculateTotalBalance');
+
+                if (contract.totalPayment) {
+                    if (contract.typeMembership === 'free') {
+                        const amount = contract.totalPayment * 0.7;
+                        totalBalance += amount;
+                        Logger.debug(`Contrato de tipo 'free': sumando ${amount} al balance total`, 'calculateTotalBalance');
+                    } else if (contract.typeMembership === 'premium') {
+                        totalBalance += contract.totalPayment;
+                        Logger.debug(`Contrato de tipo 'premium': sumando ${contract.totalPayment} al balance total`, 'calculateTotalBalance');
+                    }
+                }
+            });
+
+            const roundedTotalBalance = Math.round(totalBalance);
+            Logger.log(`Balance total calculado exitosamente: ${roundedTotalBalance}`, 'calculateTotalBalance');
+            return {
+                result: true,
+                msg: 'Balance calculado exitosamente',
+                totalBalance: roundedTotalBalance
+            };
+
+        } catch (error) {
+            Logger.error(`Error al calcular el balance para el tasker con ID ${taskerId}: ${error.message}`, error.stack, 'calculateTotalBalance');
+            throw new Error('Error al calcular el balance');
+        }
     }
+
 
 
 }
