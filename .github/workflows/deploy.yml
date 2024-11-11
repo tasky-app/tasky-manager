@@ -54,6 +54,7 @@ on:
 
 env:
   GCP_PROJECT_ID: tasky-operation
+  REPOSITORY: ${{ github.event.repository.name }}
   GAR_LOCATION: gcr.io # TODO: update Artifact Registry location
 #   REPOSITORY: YOUR_REPOSITORY_NAME # TODO: update Artifact Registry repository name
 #   SERVICE: YOUR_SERVICE_NAME # TODO: update Cloud Run service name
