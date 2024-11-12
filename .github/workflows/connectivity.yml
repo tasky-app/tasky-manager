@@ -2,7 +2,8 @@ name: apply on merge
 on:
   push:
     branches:
-      - main
+    #   - main
+      - develop
 env:
   REGION: us-central1 # TODO: update Cloud Run service region
   
