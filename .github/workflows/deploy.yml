@@ -50,7 +50,7 @@ name: Build and Deploy to Cloud Run
 on:
   push:
     branches:
-      - main
+      - develop
 
 env:
   GCP_PROJECT_ID: tasky-operation
