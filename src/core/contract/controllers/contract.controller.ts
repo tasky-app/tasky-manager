@@ -13,7 +13,7 @@ export class ContractController {
     async getTotalBalance(@Req() request: Request): Promise<object> {
         return await this.contractService.calculateTotalBalance(
             request.headers[HeadersConstants.TASKER_ID] as string,
-            request.headers[HeadersConstants.COUNTRY] 
+            request.headers[HeadersConstants.COUNTRY]
         );
     }
 
@@ -25,4 +25,23 @@ export class ContractController {
             request.headers[HeadersConstants.COUNTRY]
         );
     }
+
+
+    @Post('pending')
+    async pendingContract(@Req() request: Request) {
+        await this.contractService.pendingContract(
+            request.headers[HeadersConstants.TASKER_ID],
+            request.headers[HeadersConstants.COUNTRY]
+        );
+    }
+
+    @Post('reject')
+    async contractReject(@Req() request: Request) {
+        await this.contractService.contractReject(
+            request.headers[HeadersConstants.COUNTRY],
+            request.headers[HeadersConstants.CONTRACT_ID],
+            request.headers[HeadersConstants.REASON_CANCEL]
+        );
+    }
+
 }
