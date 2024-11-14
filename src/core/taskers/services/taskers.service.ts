@@ -197,6 +197,35 @@ export class TaskersService implements ITaskersService {
 
             await this.mailService.sendEmail(emailDetails, [{ filename: filename, content: pdfBuffer }]);
 
+            // Enviar la notificación push
+            const accessToken = (await admin.credential.applicationDefault().getAccessToken()).access_token;
+            const message = {
+                message: {
+                    notification: {
+                        title: 'Hemos verificado tu cuenta 🥳',
+                        body: `Te damos la bienvenida a Tasky 😍🐙`,
+                    },
+                    token: docData.deviceId,
+                }
+            };
+
+            try {
+                await axios.post(
+                    `https://fcm.googleapis.com/v1/projects/${process.env.PROJECT_ID_NAME}/messages:send`,
+                    message,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
+                Logger.log('Notificación push enviada correctamente', 'finish_procedure_registration');
+            } catch (error) {
+                Logger.error('Error al enviar la notificación push', error.response?.data || error.message, 'finish_procedure_registration');
+                throw new Error('Error al enviar la notificación');
+            }
+
 
             Logger.log('Correo enviado con PDF adjunto', 'executePostPdfLegal');
             return pdfBuffer;
