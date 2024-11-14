@@ -106,6 +106,8 @@ export class ContractService implements IContractService {
 
 
 
+    // Estados de coontratos
+
     async pendingContract(taskerId: string, country: ECountries) {
         const db = country === ECountries.COLOMBIA ? this.COL_DB : this.CL_DB;
 
@@ -117,7 +119,10 @@ export class ContractService implements IContractService {
 
         if (snapshot.empty) {
             Logger.warn(`No se encontraron contratos en estado pendiente para el tasker con ID ${taskerId}`, 'pendingContract');
-            throw new Error(`No se encontraron contratos en estado pendiente para el tasker con ID ${taskerId}`);
+            return {
+                status: 'error',
+                message: `No se encontraron contratos en estado pendiente para el tasker con ID ${taskerId}.`
+            };
         }
 
         // Retrieve tasker information
@@ -204,29 +209,227 @@ export class ContractService implements IContractService {
         };
     }
 
-    async contractReject(contractId: string, country: ECountries, reason: string) {
+    async contractReject(country: ECountries, contractId: string, reason: string) {
         const db = country === ECountries.COLOMBIA ? this.COL_DB : this.CL_DB;
-        const snapshot = await db.collection('contracts').where('id', '==', contractId).get();
 
-        if (snapshot.empty) {
-            Logger.warn(`No se encontraron contracts con el ID especificado`, 'contractReject');
-            throw new Error(`No se encontraron contracts con el ID especificado`);
+        // Consultar el contrato especificado
+        const contractSnapshot = await db.collection('contracts').where('id', '==', contractId).get();
+        if (contractSnapshot.empty) {
+            Logger.warn(`No se encontró el contrato con el ID especificado`, 'contractReject');
+            throw new Error(`No se encontró el contrato con el ID especificado`);
+        }
+
+        // Obtener información del contrato y los IDs de cliente y tasker
+        const contractDoc = contractSnapshot.docs[0];
+        const contractData = contractDoc.data();
+        const clientId = contractData.clientId;
+        const taskerId = contractData.taskerId;
+
+        // Consultar la información del cliente
+        const clientSnapshot = await db.collection('clients').doc(clientId).get();
+        if (!clientSnapshot.exists) {
+            Logger.warn(`No se encontró el cliente con ID ${clientId}`, 'contractReject');
+            throw new Error(`No se encontró el cliente con ID ${clientId}`);
+        }
+        const clientData = clientSnapshot.data();
+
+        // Verificar que el cliente tenga deviceId y email
+        if (!clientData?.deviceId || !clientData?.email) {
+            Logger.warn(`El cliente con ID ${clientId} no tiene deviceId o email registrado`, 'contractReject');
+            return;
+        }
+
+        // Consultar la información del tasker
+        const taskerSnapshot = await db.collection('taskers').doc(taskerId).get();
+        if (!taskerSnapshot.exists) {
+            Logger.warn(`No se encontró el tasker con ID ${taskerId}`, 'contractReject');
+            throw new Error(`No se encontró el tasker con ID ${taskerId}`);
+        }
+        const taskerData = taskerSnapshot.data();
+
+        // Verificar que el tasker tenga deviceId y email
+        if (!taskerData?.deviceId || !taskerData?.email) {
+            Logger.warn(`El tasker con ID ${taskerId} no tiene deviceId o email registrado`, 'contractReject');
+            return;
+        }
+
+        // Enviar notificación push al cliente
+        await this.sendPushNotification(
+            clientData.deviceId,
+            'Lo lamentamos 😔',
+            `El tasker ${clientData.firstname} ${clientData.lastname} no aceptó tu solicitud en Tasky 🐙, abre la app para conocer más detalles.`
+        );
+
+        // Enviar correo electrónico al cliente
+        const emailDetails = {
+            to: clientData.email,
+            subject: 'Lo sentimos - Tasky',
+            text: `El tasker ${clientData.firstname} ${clientData.lastname} no aceptó tu solicitud en Tasky 🐙, abre la app para conocer más detalles.`,
+        };
+
+        try {
+            await this.mailService.sendEmail(emailDetails);
+            Logger.log(`Correo enviado correctamente al cliente ${clientId} para el contrato ${contractDoc.id}`, 'contractReject');
+        } catch (error) {
+            Logger.error(
+                `Error al enviar el correo al cliente ${clientId} para el contrato ${contractDoc.id}`,
+                error,
+                'contractReject'
+            );
         }
 
         // Actualizar el contrato con la razón de cancelación
-        const contractRef = snapshot.docs[0].ref;
         try {
-            await contractRef.update({
+            await contractDoc.ref.update({
                 stateService: 'rejected',
-                reasonCancell: reason,
+                reason,
             });
             Logger.log(`Contrato ${contractId} rechazado con la razón: ${reason}`, 'contractReject');
+
+            await db.collection('cancellation').add({
+                idContract: contractId,
+                rejectReason: reason,
+                dateCancellation: new Date(),
+                userIdCancellation: clientId,
+                typeUser: 'client',
+                refundStatus: '',
+                penaltyPercentage: '0%',
+            });
+            Logger.log(`Razón de rechazo guardada en la colección "cancellation" para el contrato ${contractId}`, 'contractReject');
         } catch (error) {
             Logger.error(`Error al actualizar el contrato ${contractId} con la razón de cancelación`, error, 'contractReject');
             throw new Error(`Error al actualizar el contrato ${contractId} con la razón de cancelación`);
         }
+
+        if (reason === 'VENCIMIENTO_SOLICITUD') {
+            await this.sendPushNotification(
+                taskerData.deviceId,
+                'No revisaste tu solicitud de servicio en Tasky 🐙',
+                'Hemos cancelado la solicitud de manera automática 😔, te recomendamos estar más al tanto de la app para que no pierdas ninguna oportunidad 💵.'
+            );
+            await db.collection('cancellation').add({
+                idContract: contractId,
+                rejectReason: reason,
+                dateCancellation: new Date(),
+                userIdCancellation: taskerId,
+                typeUser: 'tasker',
+                refundStatus: 'inprogress',
+                penaltyPercentage: '0%',
+            });
+            Logger.log(`Razón de rechazo guardada en la colección "cancellation" para el contrato ${contractId}`, 'contractReject');
+        }
+
+        return {
+            status: 'success',
+            message: `Correo, notificación push y actualización de contrato completados para el contrato ${contractDoc.id}.`
+        };
     }
 
+    async counterProposal(country: ECountries, contractId: string, reason: string, amountProposed: string) {
+        const db = country === ECountries.COLOMBIA ? this.COL_DB : this.CL_DB;
+
+        // Consultar el contrato especificado
+        const contractSnapshot = await db.collection('contracts').where('id', '==', contractId).get();
+        if (contractSnapshot.empty) {
+            Logger.warn(`No se encontró el contrato con el ID especificado`, 'counterProposal');
+            throw new Error(`No se encontró el contrato con el ID especificado`);
+        }
+
+        // Obtener información del contrato y el ID del cliente y tasker
+        const contractDoc = contractSnapshot.docs[0];
+        const contractData = contractDoc.data();
+        const clientId = contractData.clientId;
+        const taskerId = contractData.taskerId;
+
+        // Consultar la información del cliente
+        const clientSnapshot = await db.collection('clients').doc(clientId).get();
+        if (!clientSnapshot.exists) {
+            Logger.warn(`No se encontró el cliente con ID ${clientId}`, 'counterProposal');
+            throw new Error(`No se encontró el cliente con ID ${clientId}`);
+        }
+        const clientData = clientSnapshot.data();
+
+        // Consultar la información del tasker
+        const taskerSnapshot = await db.collection('taskers').doc(taskerId).get();
+        if (!taskerSnapshot.exists) {
+            Logger.warn(`No se encontró el tasker con ID ${taskerId}`, 'counterProposal');
+            throw new Error(`No se encontró el tasker con ID ${taskerId}`);
+        }
+        const taskerData = taskerSnapshot.data();
+        const taskerName = `${taskerData.firstname} ${taskerData.lastname}`;
+
+        // Actualizar el contrato con la contra oferta
+        try {
+            await contractDoc.ref.update({
+                totalPayment: amountProposed,
+                counterOfferReason: reason,
+                stateService: 'pending'
+            });
+            Logger.log(`Contrato ${contractId} actualizado con la contra oferta y estado 'pending'`, 'counterProposal');
+        } catch (error) {
+            Logger.error(`Error al actualizar el contrato ${contractId} con la contra oferta`, error, 'counterProposal');
+            throw new Error(`Error al actualizar el contrato ${contractId} con la contra oferta`);
+        }
+
+        // Enviar notificación push al cliente informando sobre la contra oferta
+        await this.sendPushNotification(
+            clientData.deviceId,
+            'Nueva contra oferta en Tasky 🐙',
+            `${taskerName} ha hecho una contra oferta a tu solicitud de servicio en Tasky 🐙. Entra a la app para conocer más detalles`
+        );
+        Logger.log(`Notificacion push enviada correctamente al cliente ${clientId} para el contrato ${contractDoc.id}`, 'contractReject');
+
+        // Enviar correo electrónico al cliente
+        const emailDetails = {
+            to: clientData.email,
+            subject: 'Nueva contra oferta en Tasky 🐙 - Tasky',
+            text: `${taskerName} ha hecho una contra oferta a tu solicitud de servicio en Tasky 🐙. Entra a la app para conocer más detalles`,
+        };
+
+        await this.mailService.sendEmail(emailDetails);
+        Logger.log(`Correo enviado correctamente al cliente ${clientId} para el contrato ${contractDoc.id}`, 'contractReject');
+
+        return {
+            status: 'success',
+            message: `Contra oferta enviada y contrato actualizado para el contrato ${contractDoc.id}.`
+        };
+    }
+
+
+
+
+    // Función externa para enviar notificación push
+    private async sendPushNotification(deviceId: string, title: string, body: string) {
+        const message = {
+            message: {
+                notification: { title, body },
+                token: deviceId,
+            }
+        };
+        const accessToken = (await admin.credential.applicationDefault().getAccessToken()).access_token;
+
+        try {
+            await axios.post(
+                `https://fcm.googleapis.com/v1/projects/${process.env.PROJECT_ID_NAME}/messages:send`,
+                message,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            Logger.log(`Notificación push enviada correctamente al deviceId ${deviceId}`, 'sendPushNotification');
+        } catch (error) {
+            Logger.error(
+                `Error al enviar notificación push al deviceId ${deviceId}`,
+                error.response?.data || error.message,
+                'sendPushNotification'
+            );
+        }
+    }
+
+    // CRON Google Task
     private async scheduleAutoReject(contractId: string, country: ECountries, taskDate: Date) {
         const queuePath = this.client.queuePath(
             process.env.PROJECT_ID_NAME,
@@ -254,17 +457,19 @@ export class ContractService implements IContractService {
                     body: Buffer.from(JSON.stringify(payload)).toString('base64'),
                 },
                 scheduleTime: {
-                    seconds: Math.floor(taskDate.getTime() / 1000), 
+                    seconds: Math.floor(taskDate.getTime() / 1000),
                 },
             },
         };
 
         try {
-            await this.client.createTask(request); 
+            await this.client.createTask(request);
             Logger.log(`Rechazo automático programado para el contrato ${contractId} el ${taskDate}`, 'scheduleAutoReject');
         } catch (error) {
             Logger.error(`Error al programar el rechazo automático para el contrato ${contractId}`, error, 'scheduleAutoReject');
         }
     }
+
+
 
 }

@@ -1,4 +1,4 @@
-import { Controller, Post, Request, Req, Get, Param } from "@nestjs/common";
+import { Controller, Post, Request, Req, Get } from "@nestjs/common";
 import { ContractService } from "../services/contract.service";
 import { HeadersConstants } from "src/app/constants/headers";
 
@@ -29,7 +29,7 @@ export class ContractController {
 
     @Post('pending')
     async pendingContract(@Req() request: Request) {
-        await this.contractService.pendingContract(
+        return await this.contractService.pendingContract(
             request.headers[HeadersConstants.TASKER_ID],
             request.headers[HeadersConstants.COUNTRY]
         );
@@ -37,10 +37,20 @@ export class ContractController {
 
     @Post('reject')
     async contractReject(@Req() request: Request) {
-        await this.contractService.contractReject(
+        return await this.contractService.contractReject(
             request.headers[HeadersConstants.COUNTRY],
             request.headers[HeadersConstants.CONTRACT_ID],
-            request.headers[HeadersConstants.REASON_CANCEL]
+            request.headers[HeadersConstants.REASON]
+        );
+    }
+
+    @Post('counterProposal')
+    async counterProposal(@Req() request: Request) {
+        return await this.contractService.counterProposal(
+            request.headers[HeadersConstants.COUNTRY],
+            request.headers[HeadersConstants.CONTRACT_ID],
+            request.headers[HeadersConstants.REASON],
+            request.headers[HeadersConstants.AMOUNT_PROPOSED]
         );
     }
 
